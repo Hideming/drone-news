@@ -1,1 +1,69 @@
-{"name": "Publish Drone News", "on": {"schedule": [{"cron": "5 22 * * *"}, {"cron": "25 22 * * *"}], "push": {"branches": ["main"]}, "workflow_dispatch": {}}, "permissions": {"contents": "write", "pages": "write", "id-token": "write"}, "concurrency": {"group": "pages", "cancel-in-progress": false}, "jobs": {"deploy": {"environment": {"name": "github-pages", "url": "${{ steps.deployment.outputs.page_url }}"}, "runs-on": "ubuntu-latest", "steps": [{"uses": "actions/checkout@v4"}, {"uses": "actions/setup-python@v5", "with": {"python-version": "3.11"}}, {"name": "Sync from Google Drive", "run": "pip install -q gdown && echo aW1wb3J0IGdsb2IsIGpzb24sIG9zLCBzaHV0aWwsIHN1YnByb2Nlc3MKb3MubWFrZWRpcnMoInB1YmxpYyIsIGV4aXN0X29rPVRydWUpCnNodXRpbC5ybXRyZWUoIi90bXAvZCIsIGlnbm9yZV9lcnJvcnM9VHJ1ZSkKb3MubWFrZWRpcnMoIi90bXAvZCIsIGV4aXN0X29rPVRydWUpCnN1YnByb2Nlc3MucnVuKFsiZ2Rvd24iLCAiLS1mb2xkZXIiLCAiaHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL2RyaXZlL2ZvbGRlcnMvMVlZQ3BMMlpUU3VhR0xLYnFSWS1wQ1Jaclp1TGdsZHI3IiwgIi1PIiwgIi90bXAvZCIsICItLXJlbWFpbmluZy1vayJdLCBjaGVjaz1GYWxzZSkKZmlsZXMgPSBzb3J0ZWQoZ2xvYi5nbG9iKCIvdG1wL2QvKiovZHJvbmVfbmV3c18qLmpzb24iLCByZWN1cnNpdmU9VHJ1ZSkpCmlmIG5vdCBmaWxlczoKICAgIHN1YnByb2Nlc3MucnVuKFsiZ2Rvd24iLCAiMW9BOFFVR2xfQzdOR1VSVmFNcVBEU3gyY21ZSEhQS2JhIiwgIi1PIiwgIi90bXAvZC9kcm9uZV9uZXdzXzIwMjYxMDE2Lmpzb24iXSwgY2hlY2s9RmFsc2UpCiAgICBmaWxlcyA9IHNvcnRlZChnbG9iLmdsb2IoIi90bXAvZC8qKi9kcm9uZV9uZXdzXyouanNvbiIsIHJlY3Vyc2l2ZT1UcnVlKSkKZm9yIGpmIGluIGZpbGVzOgogICAgdHJ5OgogICAgICAgIGQgPSBqc29uLmxvYWQob3BlbihqZiwgZW5jb2Rpbmc9InV0Zi04IikpCiAgICAgICAgZHQgPSBkLmdldCgiZGF0ZSIsICIiKQogICAgICAgIHJfZm4gPSBkLmdldCgicmVhZGVyX2ZpbGVuYW1lIiwgZiJuZXdzX3tkdH0uaHRtbCIpCiAgICAgICAgb19mbiA9IGQuZ2V0KCJvcGVyYXRvcl9maWxlbmFtZSIsIGYib3BlcmF0b3Jfe2R0fS5odG1sIikKICAgICAgICBpZiBkLmdldCgicmVhZGVyX2h0bWwiKToKICAgICAgICAgICAgb3BlbihmInB1YmxpYy97cl9mbn0iLCAidyIsIGVuY29kaW5nPSJ1dGYtOCIpLndyaXRlKGRbInJlYWRlcl9odG1sIl0pCiAgICAgICAgICAgIG9wZW4oInB1YmxpYy9pbmRleC5odG1sIiwgInciLCBlbmNvZGluZz0idXRmLTgiKS53cml0ZShkWyJyZWFkZXJfaHRtbCJdKQogICAgICAgIGlmIGQuZ2V0KCJvcGVyYXRvcl9odG1sIik6CiAgICAgICAgICAgIG9wZW4oZiJwdWJsaWMve29fZm59IiwgInciLCBlbmNvZGluZz0idXRmLTgiKS53cml0ZShkWyJvcGVyYXRvcl9odG1sIl0pCiAgICAgICAgICAgIG9wZW4oInB1YmxpYy9vcGVyYXRvci5odG1sIiwgInciLCBlbmNvZGluZz0idXRmLTgiKS53cml0ZShkWyJvcGVyYXRvcl9odG1sIl0pCiAgICBleGNlcHQgRXhjZXB0aW9uIGFzIGU6CiAgICAgICAgcHJpbnQoZSkK | base64 -d > sync.py && python3 sync.py && git config user.name github-actions && git config user.email actions@github.com && git add public/ && (git diff --staged --quiet || (git commit -m update && git push) || true)"}, {"uses": "actions/configure-pages@v5"}, {"uses": "actions/upload-pages-artifact@v3", "with": {"path": "./public"}}, {"id": "deployment", "uses": "actions/deploy-pages@v4"}]}}}
+name: Publish Drone News
+
+on:
+  schedule:
+    - cron: '10,25,40,55 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch from Google Drive and Build Site
+        run: |
+          pip install -q gdown
+          python3 - << 'PY'
+          import os, re, json, urllib.request, subprocess
+          os.makedirs("/tmp/d", exist_ok=True)
+          os.makedirs("site", exist_ok=True)
+          ids = []
+          for u in [
+              "https://drive.google.com/file/d/1oA8QUGl_C7NGURVaMqPDSx2cmYHHPKba/view",
+              "https://drive.google.com/embeddedfolderview?id=1YYCpL2ZTSuaGLKbqRY-pCRZrZuLgldr7#list"
+          ]:
+              try:
+                  req = urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0"})
+                  html = urllib.request.urlopen(req, timeout=15).read().decode("utf-8", "ignore")
+                  ids += re.findall(r"ID_([A-Za-z0-9_-]{20,})", html)
+                  ids += re.findall(r'id="entry-([A-Za-z0-9_-]{20,})"', html)
+              except Exception as e:
+                  print("Fetch warn:", e)
+          ids += ["1xUCtn_dwWys90PY2iR82NiQ70W2d_umh", "10bCD1iv6p2dgpW7lYdLX1GRXvz6D8ki_"]
+          seen = []
+          for fid in ids:
+              if fid not in seen and fid != "1oA8QUGl_C7NGURVaMqPDSx2cmYHHPKba":
+                  seen.append(fid)
+          bundles = []
+          for i, fid in enumerate(seen):
+              out_p = f"/tmp/d/f_{i}.json"
+              subprocess.run(["gdown", fid, "-O", out_p], check=False)
+              if os.path.exists(out_p):
+                  try:
+                      d = json.load(open(out_p, encoding="utf-8"))
+                      if "reader_html" in d and "operator_html" in d:
+                          bundles.append(d)
+                  except Exception as e:
+                      print("Skip:", fid, e)
+          bundles.sort(key=lambda x: str(x.get("date", "")))
+          for d in bundles:
+              open(f"site/{d.get('reader_filename','news.html')}", "w", encoding="utf-8").write(d["reader_html"])
+              open(f"site/{d.get('operator_filename','operator_latest.html')}", "w", encoding="utf-8").write(d["operator_html"])
+          if bundles:
+              latest = bundles[-1]
+              open("site/index.html", "w", encoding="utf-8").write(latest["reader_html"])
+              open("site/operator.html", "w", encoding="utf-8").write(latest["operator_html"])
+              print("Published latest date:", latest.get("date"))
+          PY
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
