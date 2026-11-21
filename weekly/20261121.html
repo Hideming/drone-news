@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ドローン週報 11月21日号</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one-column weekly bulletin. Priority order is law, Gunma, DJI, industry.
+   Each card carries a left stripe in its category colour. */
+:root {
+  --bg: #F2F4F6;
+  --surface: #FFFFFF;
+  --ink: #13202B;
+  --ink-2: #4A5A68;
+  --line: #D8DFE5;
+  --accent: #0F3A5C;
+  --on-accent: #FFFFFF;
+  --law: #B4341B;   --law-bg: #FBEAE6;
+  --gunma: #2B6A3E; --gunma-bg: #E6F2EA;
+  --dji: #1D5BBF;   --dji-bg: #E6EEFA;
+  --biz: #5A4A9E;   --biz-bg: #EEEAF8;
+  --note-bg: #FFF6DD; --note-line: #E8D08A;
+  --font-display: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  --font-body: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E161D; --surface: #16212A; --ink: #E6EDF2; --ink-2: #9DB0BF; --line: #27343F;
+    --accent: #0A2740; --on-accent: #EAF3FA;
+    --law: #F08A76;   --law-bg: #3A1E19;
+    --gunma: #7CC794; --gunma-bg: #17301F;
+    --dji: #7FB0F5;   --dji-bg: #16263F;
+    --biz: #B3A5F0;   --biz-bg: #28224A;
+    --note-bg: #2E2712; --note-line: #6B5A1F;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E161D; --surface: #16212A; --ink: #E6EDF2; --ink-2: #9DB0BF; --line: #27343F;
+  --accent: #0A2740; --on-accent: #EAF3FA;
+  --law: #F08A76;   --law-bg: #3A1E19;
+  --gunma: #7CC794; --gunma-bg: #17301F;
+  --dji: #7FB0F5;   --dji-bg: #16263F;
+  --biz: #B3A5F0;   --biz-bg: #28224A;
+  --note-bg: #2E2712; --note-line: #6B5A1F;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.75;
+}
+a { color: var(--dji); text-underline-offset: 2px; }
+a:focus-visible, button:focus-visible, textarea:focus-visible { outline: 3px solid var(--dji); outline-offset: 2px; }
+
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 16px 48px; }
+
+/* Header */
+.masthead { background: var(--accent); color: var(--on-accent); }
+.masthead .wrap { padding-top: 28px; padding-bottom: 24px; }
+.eyebrow { margin: 0; font-size: 13px; letter-spacing: .04em; opacity: .85; }
+h1 {
+  margin: 6px 0 4px; font-family: var(--font-display); font-weight: 900;
+  font-size: 34px; line-height: 1.25; text-wrap: balance;
+}
+.period { margin: 0; font-size: 15px; font-variant-numeric: tabular-nums; opacity: .92; }
+
+/* Summary */
+.summary {
+  margin-top: -1px; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 10px; padding: 16px; margin-bottom: 20px;
+}
+.summary h2 { margin: 0 0 8px; font-family: var(--font-display); font-size: 18px; }
+.summary ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.summary li { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; }
+
+.pill {
+  display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: 12px; font-weight: 700;
+  line-height: 1.7; white-space: nowrap;
+}
+.pill.law   { color: var(--law);   background: var(--law-bg); }
+.pill.gunma { color: var(--gunma); background: var(--gunma-bg); }
+.pill.dji   { color: var(--dji);   background: var(--dji-bg); }
+.pill.biz   { color: var(--biz);   background: var(--biz-bg); }
+.pill.flag  { color: var(--ink-2); background: transparent; border: 1px solid var(--line); }
+
+/* Filter */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+.filters button {
+  font: inherit; font-size: 14px; font-weight: 500; padding: 6px 14px; min-height: 40px;
+  border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer;
+}
+.filters button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+
+/* Cards */
+.list { display: grid; gap: 14px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-left-width: 6px;
+  border-radius: 10px; padding: 16px;
+}
+.card[data-main="law"]   { border-left-color: var(--law); }
+.card[data-main="gunma"] { border-left-color: var(--gunma); }
+.card[data-main="dji"]   { border-left-color: var(--dji); }
+.card[data-main="biz"]   { border-left-color: var(--biz); }
+.card[hidden] { display: none; }
+
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 13px; color: var(--ink-2); }
+.no { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink); }
+.card h3 {
+  margin: 8px 0 8px; font-family: var(--font-display); font-weight: 900; font-size: 19px; line-height: 1.5; text-wrap: balance;
+}
+.card ul.pts { margin: 0 0 10px; padding-left: 1.2em; display: grid; gap: 6px; }
+.point {
+  margin: 10px 0 0; padding: 10px 12px; border-radius: 8px; background: var(--bg); font-size: 15px;
+}
+.point b { font-weight: 700; }
+.src { margin: 10px 0 0; font-size: 13px; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 2px 12px; }
+.src span { font-weight: 500; }
+
+.recap { margin: 8px 0 10px; display: grid; gap: 8px; }
+.recap div { display: grid; grid-template-columns: 4.2em 1fr; gap: 8px; font-size: 15px; }
+.recap dt, .recap .d { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink-2); }
+
+.bf { margin: 8px 0 10px; display: grid; gap: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.bf div { display: grid; grid-template-columns: 7.2em 1fr; gap: 10px; padding: 8px 12px; font-size: 15px; border-top: 1px solid var(--line); }
+.bf div:first-child { border-top: 0; }
+.bf .k { font-weight: 700; }
+.bf .v { font-variant-numeric: tabular-nums; }
+
+/* Sections below the list */
+section.block { margin-top: 28px; }
+section.block h2 { font-family: var(--font-display); font-size: 20px; margin: 0 0 10px; }
+.sched { display: grid; gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.sched div { display: grid; grid-template-columns: 6.2em 1fr; gap: 10px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 15px; }
+.sched div:first-child { border-top: 0; }
+.sched .d { font-variant-numeric: tabular-nums; font-weight: 700; }
+
+.note { background: var(--note-bg); border: 1px solid var(--note-line); border-radius: 10px; padding: 14px 16px; }
+.note h2 { margin-bottom: 6px; }
+.note ul { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; font-size: 15px; }
+
+.line-box { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+.line-box p { margin: 0 0 10px; font-size: 14px; color: var(--ink-2); }
+textarea {
+  width: 100%; min-height: 300px; font: inherit; font-size: 14px; line-height: 1.7; padding: 10px 12px;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); resize: vertical;
+}
+.copy {
+  margin-top: 10px; font: inherit; font-weight: 700; font-size: 15px; padding: 10px 18px; min-height: 44px;
+  border: 0; border-radius: 8px; background: var(--accent); color: var(--on-accent); cursor: pointer;
+}
+.line-share {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 10px 18px;
+  border-radius: 8px; background: #06C755; color: #FFFFFF; font-weight: 700; font-size: 15px; text-decoration: none;
+}
+.line-share:hover { background: #05A847; }
+.card .line-share { margin-top: 12px; min-height: 40px; padding: 8px 14px; font-size: 14px; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 10px; }
+.actions .copy { margin-top: 0; }
+.status { margin-left: 10px; font-size: 14px; color: var(--ink-2); }
+.lead { margin: 0 0 12px; font-size: 15px; color: var(--ink-2); }
+footer { margin-top: 28px; font-size: 12px; color: var(--ink-2); }
+
+@media (min-width: 560px) {
+  h1 { font-size: 42px; }
+  .wrap { padding-left: 24px; padding-right: 24px; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">群馬県ドローン普及協会 会員のみなさまへ</p>
+    <h1>ドローン週報</h1>
+    <p class="period">2026年11月21日号 ／ 対象 11/14（土）〜11/21（土）</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="summary" aria-labelledby="sum-h" style="margin-top:20px">
+    <h2 id="sum-h">今週のポイント</h2>
+    <ul>
+      <li><span class="pill law">法令</span><span>神奈川県が園芸博（GREEN×EXPO 2027）会場のドローン飛行禁止条例案を発表。国交省の無人航空機の告知欄に、今週の新規掲載は確認できませんでした。</span></li>
+      <li><span class="pill gunma">群馬</span><span>前橋市街地でクマ出没が続き、県警は17日にドローンも使って捜索、21日は緊急銃猟を試みました。県内の飛行禁止対象施設は3か所で、周辺での飛行は48時間前までの通報が必要です。</span></li>
+      <li><span class="pill dji">DJI</span><span>ブラックフライデーは11/27開始（Amazon先行・DJI公式）。Neo 3の発売間近とのリークが出ています。中国では11/18に一部値上げ。</span></li>
+    </ul>
+  </section>
+
+  <div class="filters" role="group" aria-label="カテゴリで絞り込み">
+    <button type="button" data-filter="all" aria-pressed="true">すべて</button>
+    <button type="button" data-filter="law" aria-pressed="false">法令</button>
+    <button type="button" data-filter="gunma" aria-pressed="false">群馬</button>
+    <button type="button" data-filter="dji" aria-pressed="false">DJI</button>
+    <button type="button" data-filter="biz" aria-pressed="false">業界</button>
+  </div>
+
+  <div class="list" id="list">
+
+    <!-- 1 -->
+    <article class="card" id="n01" data-main="law" data-cats="law">
+      <div class="meta"><span class="no">01</span><span class="pill law">法令</span><span>11/19 発表</span></div>
+      <h3>神奈川県が、園芸博会場のドローン飛行禁止条例案を発表</h3>
+      <ul class="pts">
+        <li>11/19の記者会見で、黒岩知事が条例案の提出を発表。会期は2027年3月〜9月、会場は横浜市の旧上瀬谷通信施設です。</li>
+        <li>知事が指定する期間と区域で、ドローン、ラジコン機、気球、ハンググライダーなどの飛行を禁止。撮影などは、主催者の同意と所轄警察署長への通報が必要です。違反は拘禁刑または罰金。</li>
+        <li>9月の素案では、違反時に警察官が飛行の中止を命じられ、緊急時は妨害や機器の破損などの措置も取れるとされています。公布は来年2月の予定（報道）。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 航空法の許可・承認とは別に、条例の手続きが必要になる見込みです。横浜周辺で撮影やショーの案件がある会員は、早めに主催者へ確認してください。大阪・関西万博では、飛行計画の通報漏れで放送局が書類送検された例があります（のちに不起訴）。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://naigaitimes.com/society/607957/" target="_blank" rel="noopener">内外タイムス 11/20</a>
+        <a href="https://www.pref.kanagawa.jp/documents/139041/0925_houkokushiryou_kannou.pdf" target="_blank" rel="noopener">神奈川県 9/25報告資料</a>
+        <a href="https://www.jiji.com/jc/article?k=2025100901069&amp;g=soc" target="_blank" rel="noopener">時事通信（MBS不起訴）</a>
+      </p>
+    </article>
+
+    <!-- 2 -->
+    <article class="card" id="n02" data-main="law" data-cats="law">
+      <div class="meta"><span class="no">02</span><span class="pill law">法令</span><span class="pill flag">11/21時点の確認結果</span></div>
+      <h3>国交省の無人航空機の告知に、今週の新規掲載なし</h3>
+      <ul class="pts">
+        <li>「航空局からのお知らせ」欄の最新は10/21付で、11月付の掲載は11/21時点で確認できませんでした。</li>
+        <li>直近の掲載は次のとおりです。</li>
+      </ul>
+      <div class="recap">
+        <div><span class="d">10/21</span><span>熊本地震を受けた、技能証明などの有効期間の弾力的運用（追加）。対象は特定被災地域内に住所がある人です。</span></div>
+        <div><span class="d">9/29</span><span>カテゴリーII飛行の審査要領を改正。補助者なしの目視外飛行で、人や家屋の密集地の上空を経路にする場合の扱いを明確化。ガイドラインとレベル3.5事例集も更新。</span></div>
+        <div><span class="d">8/3</span><span>無人航空機ヘルプデスクの電話番号が 03-5539-0225 に変更（平日9〜17時）。</span></div>
+        <div><span class="d">7/28</span><span>クマ対策など獣害を未然に防ぐ飛行の特例適用を再周知（次の03を参照）。</span></div>
+        <div><span class="d">7/14</span><span>小型無人機等飛行禁止法の改正が施行。対象空港周辺がおおむね300mから1,000mへ（04を参照）。</span></div>
+        <div><span class="d">6/2</span><span>多数機同時運航のガイドライン第二版を制定（ドローンショー関係者向け）。</span></div>
+      </div>
+      <p class="point"><b>ここがポイント</b> 今週すぐ対応が必要な変更は、確認できた範囲ではありません。e-Govのパブリック・コメントと警察庁の発表は、今回は直接確認できていません。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://www.mlit.go.jp/koku/koku_tk10_000003.html" target="_blank" rel="noopener">国土交通省 無人航空機の飛行ルール</a>
+      </p>
+    </article>
+
+    <!-- 3 -->
+    <article class="card" id="n03" data-main="gunma" data-cats="gunma law">
+      <div class="meta"><span class="no">03</span><span class="pill gunma">群馬</span><span class="pill law">法令</span><span class="pill flag">背景・再確認</span></div>
+      <h3>クマ対策のドローン飛行と航空法の特例、群馬県内の動き</h3>
+      <ul class="pts">
+        <li>国交省は7/28、クマ対策など獣害を未然に防ぐ飛行も、出没の蓋然性が高く緊急性がある場合は、航空法第132条の92の特例の対象になり得ると再周知しました。</li>
+        <li>高崎市は昨年11月、冬季に赤外線カメラ付きドローンで生息状況を調べ、春から夏にスピーカー付きドローンによる追い払いを研究する方針を発表。冬季調査の実施状況は、今回は確認できていません。</li>
+        <li>桐生市では8月、住宅地でのクマ目撃を受け、ドローンで上空から警戒調査をしたと報じられています。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 自治体からクマ調査の依頼を受ける場合は、その飛行が特例の対象になるのか、通常の許可・承認が要るのかを、事前に国交省の資料で確認してください。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://www.mlit.go.jp/koku/koku_tk10_000003.html" target="_blank" rel="noopener">国土交通省</a>
+        <a href="https://www.city.takasaki.gunma.jp/uploaded/attachment/34929.pdf" target="_blank" rel="noopener">高崎市 報道資料（2025/11/25）</a>
+        <a href="https://x.com/jomo_news/status/2085923734351925257" target="_blank" rel="noopener">上毛新聞 8/8</a>
+      </p>
+    </article>
+
+    <!-- 4 -->
+    <article class="card" id="n04" data-main="gunma" data-cats="gunma law">
+      <div class="meta"><span class="no">04</span><span class="pill gunma">群馬</span><span class="pill law">法令</span><span class="pill flag">再確認</span></div>
+      <h3>群馬県内の飛行禁止対象施設は3か所。周辺での飛行は48時間前までに通報</h3>
+      <ul class="pts">
+        <li>小型無人機等飛行禁止法の改正が7/14に施行され、対象施設の周辺地域は、敷地とその周辺おおむね1,000mになりました。100g未満の機体も対象です。</li>
+        <li>県警の案内にある県内の防衛関係施設は、陸上自衛隊相馬原駐屯地（渋川署・高崎北署の管轄）、同新町駐屯地吉井分屯地（高崎署の管轄）、同新町駐屯地（高崎署・藤岡署・伊勢崎署の管轄）の3か所です。</li>
+        <li>周辺地域の上空を例外として飛ばす場合は、飛行開始の48時間前までに、所定の通報書を管轄警察署経由で群馬県公安委員会に通報します。飛行区域を示す地図を添付します。新町駐屯地は施設周辺が埼玉県にまたがるため、両県の公安委員会への通報書が必要です。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 渋川、高崎、藤岡、伊勢崎の各市周辺で飛行計画を立てる会員は、防衛省の地図で周辺1,000mの範囲を確認してください。航空法の許可とは別の規制で、通報は48時間前までに間に合わせる必要があります。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://www.police.pref.gunma.jp/764923.html" target="_blank" rel="noopener">群馬県警 飛行規制のご案内</a>
+        <a href="https://www.mlit.go.jp/koku/koku_tk10_000003.html" target="_blank" rel="noopener">国土交通省</a>
+      </p>
+    </article>
+
+    <!-- 5 -->
+    <article class="card" id="n05" data-main="gunma" data-cats="gunma">
+      <div class="meta"><span class="no">05</span><span class="pill gunma">群馬</span><span class="pill flag">予定</span><span>11/26〜27</span></div>
+      <h3>JULC群馬教習所で、国家資格の更新講習と二等基本講習</h3>
+      <ul class="pts">
+        <li>11/26は一等・二等の更新講習。二等基本（初学者）は11/26〜27の日程があります。</li>
+        <li>県内では、JMAドローンスクール群馬会場（伊勢崎市）も更新講習に対応しています。日程は問い合わせが必要です。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 技能証明の更新が近い会員は、年末前に受講日を押さえておくと安心です。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://julc.co.jp/campus/gunma" target="_blank" rel="noopener">JULC 群馬教習所</a>
+        <a href="https://gunma.jma-drone.or.jp/" target="_blank" rel="noopener">JMA 群馬会場</a>
+        <a href="https://www.mlit.go.jp/koku/content/001520574.pdf" target="_blank" rel="noopener">国交省 登録講習機関一覧（10/31時点）</a>
+      </p>
+    </article>
+
+    <!-- 6 -->
+    <article class="card" id="n06" data-main="dji" data-cats="dji">
+      <div class="meta"><span class="no">06</span><span class="pill dji">DJI</span><span class="pill flag">非公式情報を含む</span><span>11/15〜21</span></div>
+      <h3>DJI Neo 3は発売間近か。360度対応の新型試作機もリーク</h3>
+      <ul class="pts">
+        <li>11/19、リーカーがNeo 3の外箱と実機の写真を公開。本体のみの版と、小型リモコン「RC Mini」付きのFly More Combo版の2種類が写っています。</li>
+        <li>11/18にはアクセサリーメーカーが対応製品の販売を開始。仕様と発表日は不明で、ティザーも未公開のため、月内の発表はなさそうとの見方です。</li>
+        <li>11/15には、360度魚眼レンズと通常のジンバルカメラを備えた新型ドローンの試作機が撮影されました。Avata 360の改良版か、Avata 3かは不明です。</li>
+        <li>DJIは11/18〜20のInter BEE（幕張メッセ）に出展し、Avata 360を展示しました。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> いずれも公式発表前の情報です。仕様、価格、日本での発売日は決まっていません。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://taisy0.com/2026/11/21/230727.html" target="_blank" rel="noopener">taisy0 11/21</a>
+        <a href="https://taisy0.com/2026/11/18/230582.html" target="_blank" rel="noopener">11/18</a>
+        <a href="https://taisy0.com/2026/11/15/230435.html" target="_blank" rel="noopener">11/15</a>
+        <a href="https://prtimes.jp/main/html/rd/p/000000460.000015765.html" target="_blank" rel="noopener">DJI Inter BEE出展（PR TIMES）</a>
+      </p>
+    </article>
+
+    <!-- 7 -->
+    <article class="card" id="n07" data-main="dji" data-cats="dji">
+      <div class="meta"><span class="no">07</span><span class="pill dji">DJI</span><span class="pill flag">お得情報</span><span>11/21時点</span></div>
+      <h3>ブラックフライデー、日程まとめ。対象機種と割引率は未発表</h3>
+      <div class="bf">
+        <div><span class="k">Amazon先行</span><span class="v">11/27(金) 0:00 〜 11/29(日) 23:59</span></div>
+        <div><span class="k">Amazon本セール</span><span class="v">11/30(月) 0:00 〜 12/7(月) 23:59</span></div>
+        <div><span class="k">DJI公式（日本）</span><span class="v">11/27 〜 12/7。一部は別期間で、Osmo Mobile 8とDJI Mic Miniは11/24から、DJI Neoは11/1〜11/30</span></div>
+        <div><span class="k">AliExpress</span><span class="v">11/19 0:00 〜 12/3 23:59</span></div>
+        <div><span class="k">ポイントアップ</span><span class="v">Amazon。11/19 10:00 〜 12/7。要エントリー、合計1万円以上の購入で上限10,000ポイント</span></div>
+      </div>
+      <ul class="pts">
+        <li>例年、対象製品はセール開始の4〜5日前に発表されます。来週前半にも出る可能性があります。</li>
+        <li>昨年は、型落ちのPocket 3が20%オフになりました。ただし過去の実績は、今年の割引を保証しません。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 農薬散布機などの業務機が対象になるかは分かっていません。買う機種が決まっているなら、11/27以降にAmazonとDJI公式の価格を見比べてください。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://devicecamp.com/action-camera-black-friday-2026/" target="_blank" rel="noopener">DEVICECAMP 11/21</a>
+        <a href="https://yamazuki.net/dji-sale/" target="_blank" rel="noopener">yamazuki.net 11/17</a>
+        <a href="https://premium.gamepedia.jp/shopping/archives/72123" target="_blank" rel="noopener">AliExpress BF</a>
+      </p>
+    </article>
+
+    <!-- 8 -->
+    <article class="card" id="n08" data-main="dji" data-cats="dji">
+      <div class="meta"><span class="no">08</span><span class="pill dji">DJI</span><span>11/18 実施（11/13 報道）</span></div>
+      <h3>DJIが中国で一部製品を値上げ。日本での改定は未発表</h3>
+      <ul class="pts">
+        <li>IT Homeの報道として、DJIは中国で11/18から一部製品を値上げしました。背景は、半導体やストレージなど主要部品の価格高騰とされています。</li>
+        <li>日本で同時に改定されるのか、遅れて実施されるのかは、11/13時点で分かっていません。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 日本での値上げは確認できていません。購入を検討中なら、ブラックフライデーの価格を先に確認してください。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://taisy0.com/2026/11/13/230403.html" target="_blank" rel="noopener">taisy0 11/13</a>
+      </p>
+    </article>
+
+    <!-- 9 -->
+    <article class="card" id="n09" data-main="biz" data-cats="biz">
+      <div class="meta"><span class="no">09</span><span class="pill biz">業界</span><span>11/19</span></div>
+      <h3>送電線ドローン点検「BEPライン」が、ロボット大賞で優秀賞</h3>
+      <ul class="pts">
+        <li>ブルーイノベーションの送電線ドローン点検ソリューション「BEPライン」が、第12回ロボット大賞で優秀賞を受賞しました。</li>
+        <li>送電線に自動で追従して飛ぶ仕組みと、導入実績、今後の展開が紹介されています。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> インフラ点検は、ドローン活用の需要が伸びている分野です。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://www.drone-press.jp/" target="_blank" rel="noopener">DRONE PRESS（11/19付の記事）</a>
+      </p>
+    </article>
+
+    <!-- 10 -->
+    <article class="card" id="n10" data-main="biz" data-cats="biz gunma">
+      <div class="meta"><span class="no">10</span><span class="pill biz">業界</span><span class="pill gunma">群馬との接点</span><span class="pill flag">予定</span><span>11/27〜28</span></div>
+      <h3>第5回ドローンサミット（郡山）と、新スマート物流シンポジウム</h3>
+      <ul class="pts">
+        <li>11/27〜28に福島県郡山市で開催。全国新スマート物流推進協議会が出展し、27日にシンポジウムを開きます。参加費はいずれも無料です。</li>
+        <li>既存の陸上配送とドローン配送を組み合わせる「新スマート物流」は、買い物弱者や医療弱者への対応、災害時の物資輸送を念頭に進められています。</li>
+        <li>群馬県では、安中市がセイノーHD、エアロネクストと2022年に連携協定を結び、2023年2月にドローン配送の実証をしています。</li>
+      </ul>
+      <p class="src"><span>出典</span>
+        <a href="https://www.logi-today.com/1022411" target="_blank" rel="noopener">LOGISTICS TODAY 11/16</a>
+        <a href="https://iotnews.jp/smart-logistics/216693/" target="_blank" rel="noopener">IoTNEWS（安中市の実証）</a>
+      </p>
+    </article>
+
+    <!-- 11 -->
+    <article class="card" id="n11" data-main="biz" data-cats="biz">
+      <div class="meta"><span class="no">11</span><span class="pill biz">業界</span><span>11/20</span></div>
+      <h3>大阪駅前「うめきたの森」開園を祝うドローンショー</h3>
+      <ul class="pts">
+        <li>11/20の18時と20時の2回、うめきた公園サウスパーク上空で実施。各回は約15分で、JR大阪駅周辺では初めてのドローンショーです。</li>
+        <li>運営はレッドクリフ。ドローン飛行に合わせ、公園の立ち入りを一定時間規制しました。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 多数機の同時運航は、国交省が6/2に第二版のガイドラインを出しています。ショーや多数機運用に関わる会員は確認を。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://droneshow.jp/events/agawk6p9-g4" target="_blank" rel="noopener">DRONE SHOW</a>
+        <a href="https://redcliff-inc.co.jp/droneshow_info/" target="_blank" rel="noopener">レッドクリフ</a>
+      </p>
+    </article>
+
+    <article class="card" id="n12" data-main="dji" data-cats="dji">
+      <div class="meta"><span class="no">12</span><span class="pill dji">DJI</span><span class="pill flag">予定・近隣</span><span>11/20 発表</span></div>
+      <h3>DJI Dock 3の実演セミナー、12/11にさいたま市で無料開催</h3>
+      <ul class="pts">
+        <li>秋葉原ドローンスクール（田中電気）が、12/11（金）14時から田中電気グランド（さいたま市桜区）で開催。定員20名程度、事前申込制です。</li>
+        <li>Dock 3のカバー開閉や遠隔操作の動作を実演し、11/5発表の新型産業機Matrice 5Tの解説もあります。5Tの実機はなく、雨天時は中止です。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 県南部から車で行ける距離で、ドローンポートの実動を無料で見られる機会です。会場に駐車場があります。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://prtimes.jp/main/html/rd/p/000000059.000135389.html" target="_blank" rel="noopener">田中電気（PR TIMES）</a>
+      </p>
+    </article>
+
+    <article class="card" id="n13" data-main="dji" data-cats="dji biz">
+      <div class="meta"><span class="no">13</span><span class="pill dji">DJI</span><span class="pill biz">業界</span><span>11/20 発表</span></div>
+      <h3>DJI産業機を月額で導入。ドロサツ!!が「サブスククレジット」の受付を再開</h3>
+      <ul class="pts">
+        <li>DJI正規ディーラーのドロサツ!!が、提携先と提供する産業用ドローン向けの月額導入の受付を再開しました。物流・農業用ドローンやInspireシリーズも対象です。</li>
+        <li>期間終了後は、返却するか所有するかを選べます。月額料金や契約期間は、審査と見積もりのあとに案内されます。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 農業用機などを一括購入せずに導入したい会員向けの選択肢です。金額は公表されていないので、問い合わせが必要です。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://prtimes.jp/main/html/rd/p/000000033.000035354.html" target="_blank" rel="noopener">drone supply &amp; control（PR TIMES）</a>
+      </p>
+    </article>
+
+    <article class="card" id="n14" data-main="biz" data-cats="biz">
+      <div class="meta"><span class="no">14</span><span class="pill biz">業界</span><span>11/12 発表</span></div>
+      <h3>NTTイードローン、二等保有者向けの一等講習を開講</h3>
+      <ul class="pts">
+        <li>二等の技能証明を持つ人が対象です。学科9時間はオンライン、実地10時間は対面で、会場は東京都調布市と千葉県東金市です。</li>
+        <li>受講料は税込44万円。追加講習や再受審になった場合は別料金です。</li>
+      </ul>
+      <p class="src"><span>出典</span>
+        <a href="https://www.nttedt.co.jp/post/first-classunmannedaircraftpilottrainingcourseopened-20261112" target="_blank" rel="noopener">NTT e-Drone Technology</a>
+      </p>
+    </article>
+
+  </div>
+
+  <section class="block" aria-labelledby="local-h">
+    <h2 id="local-h">群馬ローカル深掘り</h2>
+    <p class="lead">県内の動きを、今週の出来事と、最近の背景に分けて並べました。</p>
+    <div class="list" id="list-local">
+
+      <article class="card" id="nG1" data-main="gunma" data-cats="gunma">
+        <div class="meta"><span class="no">G1</span><span class="pill gunma">群馬</span><span class="pill flag">今週</span><span>11/17〜21</span></div>
+        <h3>前橋市街地でクマ出没が続く。県警はドローンも使って捜索、21日は緊急銃猟を試みる</h3>
+        <ul class="pts">
+          <li>11/17、広瀬川付近で親子とみられるクマ2頭が目撃され、50代の男性がけが。子グマとみられる1頭は緊急銃猟で捕獲されました。</li>
+          <li>17日の捜索では、市職員、県警、猟友会が広瀬川の草むらを調べ、県警がドローンを使うなどして詳しく調べると報じられました。</li>
+          <li>19日朝には、自転車で登校中の高校生が追いかけられました。</li>
+          <li>21日午前6時20分ごろ、天川大島町の天台橋付近で、巡回中の警察官が橋の下の暗渠から顔を出すクマを目撃。市は約400mの道路を封鎖し、午後4時20分ごろから緊急銃猟を試みましたが、午後5時55分時点で姿は確認できていません。</li>
+          <li>県教育委員会は、全県立学校に、保護者の送迎や部活動の中止・延期の検討を通知しました。</li>
+        </ul>
+        <p class="point"><b>ここがポイント</b> ドローンの使用が確認できたのは、17日の県警の捜索です。21日の捜索でのドローン使用は、確認した記事に書かれていません。22日以降の続報も未確認です。市や県警から支援の要請が来る場合に備え、飛行の根拠（航空法の特例か、許可・承認か）と、災害協定の対象にクマ対応が含まれるかを、先に整理しておくと動きやすくなります。</p>
+        <p class="src"><span>出典</span>
+          <a href="https://www.jomo-news.co.jp/articles/-/1067176" target="_blank" rel="noopener">上毛新聞 11/17</a>
+          <a href="https://www.jomo-news.co.jp/articles/-/1070938" target="_blank" rel="noopener">上毛新聞 11/21</a>
+          <a href="https://news.yahoo.co.jp/articles/fc4b8902a1f341295e49971464b8e8e4fcf02746" target="_blank" rel="noopener">群馬テレビ 11/21</a>
+          <a href="https://www.fmgunma.com/fmgnews/?p=12667" target="_blank" rel="noopener">FM GUNMA 11/21</a>
+        </p>
+      </article>
+
+      <article class="card" id="nG2" data-main="gunma" data-cats="gunma">
+        <div class="meta"><span class="no">G2</span><span class="pill gunma">群馬</span><span class="pill flag">背景</span><span>10/12 実施・10/16 発表</span></div>
+        <h3>嬬恋村で、道路が寸断された場合に備えたドローン輸送の実証</h3>
+        <ul class="pts">
+          <li>セイノースーパーエクスプレスが、西武・プリンスホテルズワールドワイド、嬬恋村と連携し、10/12に実施したと10/16に発表しました。</li>
+          <li>道路が通れなくなった場合の代替輸送手段として、輸送業務を担う万座地区を対象に、営業所から万座地区を結ぶルートで物資を運びました。地域の孤立を防ぐ狙いです。</li>
+        </ul>
+        <p class="point"><b>ここがポイント</b> 山間部の観光地で、災害時の事業継続（BCP）にドローン輸送を組み込む動きの一例です。</p>
+        <p class="src"><span>出典</span>
+          <a href="https://www.lnews.jp/2026/10/s1016601.html" target="_blank" rel="noopener">LNEWS 10/16</a>
+        </p>
+      </article>
+
+      <article class="card" id="nG3" data-main="gunma" data-cats="gunma">
+        <div class="meta"><span class="no">G3</span><span class="pill gunma">群馬</span><span class="pill flag">背景</span><span>9/17 発表</span></div>
+        <h3>橋梁点検の新工法が、県の補助金に採択。県内で現場実証へ</h3>
+        <ul class="pts">
+          <li>カワナベ工業、群馬大学、アイ・ロボティクスの3者の提案が、群馬県の令和8年度「ぐんま未来共創トライアル補助金」に採択されました。</li>
+          <li>群馬大学の鉄筋腐食診断技術「加振レーダ」を、壁面移動ロボットやドローンに載せ、高所のコンクリート構造物の内部を壊さずに診断する工法です。</li>
+          <li>2026年度は県内の橋梁などで現場実証を行い、計測精度、移動・接触性能、安全性、作業時間を検証します。</li>
+        </ul>
+        <p class="src"><span>出典</span>
+          <a href="https://prtimes.jp/main/html/rd/p/000000074.000022548.html" target="_blank" rel="noopener">アイ・ロボティクス（PR TIMES）</a>
+        </p>
+      </article>
+
+      <article class="card" id="nG4" data-main="gunma" data-cats="gunma">
+        <div class="meta"><span class="no">G4</span><span class="pill gunma">群馬</span><span class="pill flag">背景</span><span>9/19</span></div>
+        <h3>桐生で初の「ドローンフェス」。旧北中の校庭が実験と訓練の場に</h3>
+        <ul class="pts">
+          <li>群馬大学大学院理工学府と桐生ドローン利活用協議会が9/19、桐生北中跡地と群大桐生キャンパスで初開催。定員40人に対し76人が来場しました。</li>
+          <li>北中跡地は人家が少なく、飛行させるハードルが低い場所です。専用のドローンポートがあり、群馬大の実験や消防の訓練に使われています。</li>
+          <li>災害対応や有害鳥獣対策での活用が期待されています。</li>
+        </ul>
+        <p class="src"><span>出典</span>
+          <a href="https://kiryutimes.jp/article/sG2ypnqa" target="_blank" rel="noopener">桐生タイムス 9/25</a>
+          <a href="https://www.jomo-news.co.jp/articles/-/1023536" target="_blank" rel="noopener">上毛新聞</a>
+        </p>
+      </article>
+
+      <article class="card" id="nG5" data-main="gunma" data-cats="gunma">
+        <div class="meta"><span class="no">G5</span><span class="pill gunma">群馬</span><span class="pill flag">背景</span><span>9/1</span></div>
+        <h3>片品村で、ドローンを使った合同防災訓練。NTT東日本群馬支店が参加</h3>
+        <ul class="pts">
+          <li>片品村、村消防団、利根沼田広域消防本部東消防署、県の危機管理課と消防保安課、沼田土木事務所、国交省利根川水系砂防事務所、東京電力パワーグリッド渋川支社などが参加しました。</li>
+          <li>災害時に各機関が撮影するドローン映像を共有し、情報連携を強める狙いです。NTT東日本と片品村は、2021年に災害時の相互協力協定を結んでいます。</li>
+        </ul>
+        <p class="src"><span>出典</span>
+          <a href="https://www.ntt-east.co.jp/gunma/news/detail/pdf/20260901.pdf" target="_blank" rel="noopener">NTT東日本 群馬支店</a>
+        </p>
+      </article>
+
+      <article class="card" id="nG6" data-main="gunma" data-cats="gunma">
+        <div class="meta"><span class="no">G6</span><span class="pill gunma">群馬</span><span class="pill flag">背景・近隣</span><span>8/21、12/19〜</span></div>
+        <h3>ドローンショー。高崎は3年目、県境の足利は600機に増やして冬も開催</h3>
+        <ul class="pts">
+          <li>8/21、ドローン産業安全運用協会（DISOA）が高崎まつりの告知ドローンショーを実施。300機が高崎のモチーフを描き、ラジオ高崎と連動しました。</li>
+          <li>栃木県のあしかがフラワーパークでは、レッドクリフが12/19〜1/3のうち12日間、600機のショーを開催します。昨年の500機から100機増やします（11/20発表）。</li>
+        </ul>
+        <p class="point"><b>ここがポイント</b> あしかがフラワーパークは、桐生、太田、館林から近い県境の催しです。</p>
+        <p class="src"><span>出典</span>
+          <a href="https://torakuri.com/uncategorized/4187/" target="_blank" rel="noopener">トラクリ（DISOA）</a>
+          <a href="https://disoa.jp/information/%E3%83%A9%E3%82%B8%E3%82%AAx%E3%83%89%E3%83%AD%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%BC/" target="_blank" rel="noopener">DISOA</a>
+          <a href="https://prtimes.jp/main/html/rd/p/000000194.000087924.html" target="_blank" rel="noopener">レッドクリフ（PR TIMES）</a>
+        </p>
+      </article>
+
+      <article class="card" id="nG7" data-main="gunma" data-cats="gunma">
+        <div class="meta"><span class="no">G7</span><span class="pill gunma">群馬</span><span class="pill flag">背景</span><span>2024〜2026年</span></div>
+        <h3>県内の自治体とドローン団体の災害協定。クマ対応が対象かは協定ごとに確認を</h3>
+        <ul class="pts">
+          <li>邑楽町は、7月に日本ドローン協会群馬事業所と災害対策活動の協定を結びました。同事業所とは、片品村、明和町、玉村町、大泉町、板倉町、安中市も協定を結んでいます。</li>
+          <li>群馬県ドローン普及協会は、東吾妻町、邑楽町と、被災状況の把握や行方不明者の捜索などでの協力協定を結んでいます。</li>
+          <li>高崎市は、ドローン産業安全運用協会と、災害時の被害調査で協定を結んでいます。</li>
+        </ul>
+        <p class="point"><b>ここがポイント</b> 前橋市のようなクマ対応で支援を求められた場合、協定の対象になるかは文面によります。上毛新聞の報道では、被害調査や捜索、物資輸送が中心です。</p>
+        <p class="src"><span>出典</span>
+          <a href="https://www.jomo-news.co.jp/articles/-/972383" target="_blank" rel="noopener">上毛新聞（邑楽町）</a>
+          <a href="https://www.jomo-news.co.jp/articles/-/563764" target="_blank" rel="noopener">上毛新聞（普及協会と邑楽町）</a>
+          <a href="https://www.jomo-news.co.jp/articles/-/471281" target="_blank" rel="noopener">上毛新聞（東吾妻町）</a>
+          <a href="https://www.jomo-news.co.jp/subcategory/%E3%83%89%E3%83%AD%E3%83%BC%E3%83%B3" target="_blank" rel="noopener">上毛新聞 ドローン一覧</a>
+        </p>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="sched-h">
+    <h2 id="sched-h">これからの予定</h2>
+    <div class="sched">
+      <div><span class="d">11/24(火)</span><span>DJI公式：Osmo Mobile 8、DJI Mic Miniのセール開始</span></div>
+      <div><span class="d">11/26(木)</span><span>JULC群馬教習所：一等・二等の更新講習（二等基本は11/26〜27）</span></div>
+      <div><span class="d">11/27(金)</span><span>Amazon先行セール、DJI公式ブラックフライデー開始</span></div>
+      <div><span class="d">11/27〜28</span><span>第5回ドローンサミット（郡山）。27日は新スマート物流シンポジウム</span></div>
+      <div><span class="d">11/30(月)</span><span>Amazon本セール開始。DJI Neoの公式セールは、この日まで</span></div>
+      <div><span class="d">12/16(水)</span><span>DJI最新機の無料体験会（郡山）。産業用Matrice 5Tの屋外実演あり</span></div>
+    </div>
+    <p class="src"><span>出典</span>
+      <a href="https://prtimes.jp/main/html/rd/p/000000512.000045277.html" target="_blank" rel="noopener">スペースワン（12/16の体験会）</a>
+    </p>
+  </section>
+
+  <section class="block note" aria-labelledby="chk-h">
+    <h2 id="chk-h">配信前に確認したい点</h2>
+    <ul>
+      <li>群馬の項目は、上毛新聞の見出しと冒頭、県・市の発表、各社のリリースで確認しました。NHKや読売など、ほかの地元メディアは未確認です。前橋のクマ対応は、21日夕方までの情報です。</li>
+      <li>e-Govのパブリック・コメントと警察庁の発表は、直接確認できていません。</li>
+      <li>DJIの新製品に関する情報は、公式発表ではなくリークです。</li>
+      <li>国交省ページの内容は、2026年11月21日に取得したものです。</li>
+    </ul>
+  </section>
+
+  <section class="block" aria-labelledby="line-h">
+    <h2 id="line-h">LINE投稿用テキスト</h2>
+    <div class="line-box">
+      <p>LINEには見出しだけが届き、リンクを開くとこのページで詳細を読めます。「LINEで送る」を押すと、送り先のトークを選べます（スマホのLINEアプリ）。各記事の下のボタンは、その記事の見出しとリンクだけを送ります。</p>
+      <textarea id="line-text" aria-label="LINE投稿用テキスト">【ドローン週報 11/21号】
+
+■法令
+・神奈川県、園芸博会場のドローン飛行禁止条例案を発表
+・国交省の告知、今週の新規掲載なし
+
+■群馬
+・前橋市街地のクマ捜索に県警がドローン
+・県内の飛行禁止対象施設は3か所、周辺は48時間前までに通報
+・JULC群馬教習所で更新講習（11/26）
+・ほか県内の最近の動き6件
+
+■DJI
+・Neo 3は発売間近か（非公式情報）
+・ブラックフライデーは11/27開始
+・中国で一部値上げ、日本は未発表
+・DJI Dock 3の無料実演、12/11さいたま市
+・DJI産業機の月額導入、ドロサツ!!が受付再開
+
+■業界
+・BEPラインがロボット大賞で優秀賞
+・ドローンサミット（郡山）11/27〜28
+・うめきたの森でドローンショー
+・NTTイードローン、二等保有者向けの一等講習
+
+詳細はこちら
+https://hideming.github.io/drone-news/weekly/20261121.html</textarea>
+      <div class="actions"><a class="line-share" id="line-all" href="https://line.me/R/share" target="_blank" rel="noopener">LINEで送る</a><button type="button" class="copy" id="copy-btn">テキストをコピー</button><span class="status" id="copy-status" role="status" aria-live="polite"></span></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>作成日 2026年11月21日。出典の記載日は、各ページの公開日または更新日です。公式発表と食い違う場合は、公式発表を優先してください。</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var buttons = document.querySelectorAll('.filters button');
+  var cards = document.querySelectorAll('.card');
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var f = b.getAttribute('data-filter');
+      buttons.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      cards.forEach(function (c) {
+        var cats = (c.getAttribute('data-cats') || '').split(' ');
+        c.hidden = !(f === 'all' || cats.indexOf(f) !== -1);
+      });
+    });
+  });
+
+  var LINE = 'https://line.me/R/share?text=';
+  var PAGE = 'https://hideming.github.io/drone-news/weekly/20261121.html';
+  function clip(t, n) { t = t.replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; }
+
+  cards.forEach(function (c) {
+    var h = c.querySelector('h3');
+    if (!h) return;
+    var lines = ['【ドローン週報 11/21号】', clip(h.textContent, 60), '詳細 ' + PAGE + '#' + c.id];
+    var a = document.createElement('a');
+    a.className = 'line-share';
+    a.href = LINE + encodeURIComponent(lines.join('\n'));
+    a.target = '_blank'; a.rel = 'noopener';
+    a.textContent = 'この記事をLINEで送る';
+    a.setAttribute('aria-label', 'LINEで送る：' + h.textContent);
+    c.appendChild(a);
+  });
+
+  var all = document.getElementById('line-all');
+  var taAll = document.getElementById('line-text');
+  function setAll() { all.href = LINE + encodeURIComponent(taAll.value); }
+  setAll();
+  taAll.addEventListener('input', setAll);
+
+  var btn = document.getElementById('copy-btn');
+  var ta = document.getElementById('line-text');
+  var st = document.getElementById('copy-status');
+  btn.addEventListener('click', function () {
+    ta.focus(); ta.select();
+    var done = function () { st.textContent = 'コピーしました'; };
+    var fail = function () { st.textContent = 'コピーできませんでした。テキストを長押しして選び、コピーしてください'; };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ta.value).then(done, fail);
+      } else { fail(); }
+    } catch (e) { fail(); }
+  });
+})();
+</script>
+</body>
+</html>

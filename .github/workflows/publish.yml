@@ -16,6 +16,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Fetch from Google Drive and Build Site
         run: |
           pip install -q gdown
@@ -61,6 +63,12 @@ jobs:
               open("site/operator.html", "w", encoding="utf-8").write(latest["operator_html"])
               print("Published latest date:", latest.get("date"))
           PY
+      - name: Add weekly digest pages
+        run: |
+          if [ -d weekly ]; then
+            mkdir -p site/weekly
+            cp -r weekly/. site/weekly/
+          fi
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
