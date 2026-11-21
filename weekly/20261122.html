@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ドローン週報 | 2026年11月22日号</title>
+<style>
+:root {
+  --primary: #0284c7; --primary-dark: #0369a1;
+  --bg: #f8fafc; --surface: #ffffff; --ink: #0f172a; --ink-2: #475569; --line: #e2e8f0;
+  --law: #b91c1c;   --law-bg: #fef2f2;
+  --gunma: #15803d; --gunma-bg: #f0fdf4;
+  --dji: #0369a1;   --dji-bg: #e0f2fe;
+  --biz: #6d28d9;   --biz-bg: #f5f3ff;
+  --note-bg: #fffbeb; --note-line: #fde68a;
+}
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 20px 14px 40px; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  font-size: 15.5px; line-height: 1.7;
+}
+a { color: var(--primary); text-underline-offset: 2px; }
+a:focus-visible, button:focus-visible, textarea:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+.container { max-width: 900px; margin: 0 auto; }
+
+header.top {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff;
+  padding: 28px 24px; border-radius: 16px; margin-bottom: 18px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+.header-tag {
+  display: inline-block; background: rgba(56,189,248,0.2); color: #38bdf8;
+  padding: 4px 12px; border-radius: 9999px; font-size: 13px; font-weight: 600; margin-bottom: 12px;
+}
+header.top h1 { margin: 0 0 8px; font-size: 22px; font-weight: 800; line-height: 1.35; }
+header.top p { margin: 0; font-size: 13.5px; color: #94a3b8; }
+
+.summary-banner {
+  background: var(--surface); border: 1px solid var(--line); border-left: 5px solid var(--primary);
+  border-radius: 12px; padding: 20px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.summary-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.summary-banner h2 { margin: 0; font-size: 16px; color: var(--primary-dark); }
+.summary-hint { font-size: 12px; color: #64748b; background: #f1f5f9; padding: 3px 8px; border-radius: 6px; font-weight: 600; }
+.summary-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.summary-list a {
+  display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start;
+  padding: 8px 10px; border-radius: 8px; color: var(--ink); text-decoration: none;
+}
+.summary-list a:hover { background: #f0f9ff; color: var(--primary-dark); }
+.num {
+  display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--primary); color: #fff; font-size: 13px; font-weight: 800;
+}
+.summary-list b { font-weight: 700; }
+.summary-list .pill { margin-right: 6px; }
+
+.pill { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; line-height: 1.6; white-space: nowrap; }
+.pill.law   { color: var(--law);   background: var(--law-bg); }
+.pill.gunma { color: var(--gunma); background: var(--gunma-bg); }
+.pill.dji   { color: var(--dji);   background: var(--dji-bg); }
+.pill.biz   { color: var(--biz);   background: var(--biz-bg); }
+.pill.flag  { color: var(--ink-2); background: #f1f5f9; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+.filters button {
+  font: inherit; font-size: 14px; font-weight: 700; padding: 6px 16px; min-height: 40px;
+  border-radius: 9999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); cursor: pointer;
+}
+.filters button[aria-pressed="true"] { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+.list { display: grid; gap: 16px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-left: 5px solid var(--primary);
+  border-radius: 14px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); scroll-margin-top: 16px;
+}
+.card[data-main="law"]   { border-left-color: var(--law); }
+.card[data-main="gunma"] { border-left-color: var(--gunma); }
+.card[data-main="dji"]   { border-left-color: var(--dji); }
+.card[data-main="biz"]   { border-left-color: var(--biz); }
+.card[hidden] { display: none; }
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 13px; color: var(--ink-2); }
+.no {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 24px; padding: 0 6px;
+  border-radius: 6px; background: #0f172a; color: #fff; font-size: 12px; font-weight: 800;
+}
+.card h3 { margin: 10px 0 10px; font-size: 18px; font-weight: 800; line-height: 1.45; }
+.card ul.pts { margin: 0 0 10px; padding-left: 1.2em; display: grid; gap: 6px; }
+.point {
+  margin: 12px 0 0; padding: 12px 14px; border-radius: 10px; font-size: 14.5px;
+  background: var(--gunma-bg); border: 1px solid #bbf7d0; color: #14532d;
+}
+.point b { display: block; color: #166534; font-size: 13px; margin-bottom: 2px; }
+.src { margin: 12px 0 0; font-size: 13px; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.src span { font-weight: 700; }
+
+.recap { margin: 8px 0 10px; display: grid; gap: 8px; }
+.recap div { display: grid; grid-template-columns: 4.2em 1fr; gap: 8px; font-size: 14.5px; }
+.recap .d { font-weight: 700; color: var(--ink-2); }
+.bf { margin: 8px 0 10px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.bf div { display: grid; grid-template-columns: 7.2em 1fr; gap: 10px; padding: 8px 12px; font-size: 14.5px; border-top: 1px solid var(--line); }
+.bf div:first-child { border-top: 0; }
+.bf .k { font-weight: 700; }
+
+section.block { margin-top: 32px; }
+section.block > h2 {
+  margin: 0 0 12px; padding-left: 10px; border-left: 4px solid var(--primary);
+  font-size: 18px; font-weight: 800; color: var(--primary-dark);
+}
+.lead { margin: 0 0 12px; font-size: 14px; color: var(--ink-2); }
+.sched { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.sched div { display: grid; grid-template-columns: 6.4em 1fr; gap: 10px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 14.5px; }
+.sched div:first-child { border-top: 0; }
+.sched .d { font-weight: 800; color: var(--primary-dark); }
+
+.note { background: var(--note-bg); border: 1px solid var(--note-line); border-radius: 12px; padding: 16px 18px; }
+.note ul { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; font-size: 14.5px; }
+
+.control-panel {
+  background: #ffffff; border: 2px solid var(--primary); border-radius: 14px; padding: 20px;
+  margin-bottom: 24px; box-shadow: 0 4px 14px rgba(2,132,199,0.1);
+}
+.control-title { margin: 0 0 6px; font-size: 16px; font-weight: 800; color: var(--primary-dark); }
+.control-desc { margin: 0 0 14px; font-size: 13px; color: var(--ink-2); }
+textarea {
+  width: 100%; min-height: 190px; font: inherit; font-size: 14px; line-height: 1.6; padding: 12px 14px;
+  border: 1px solid var(--line); border-radius: 8px; background: #f8fafc; color: #334155; resize: vertical;
+}
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 12px; }
+.line-share, .btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 12px 20px;
+  border: 0; border-radius: 8px; font: inherit; font-size: 14px; font-weight: 800; text-decoration: none; cursor: pointer;
+}
+.line-share { background: #06c755; color: #ffffff !important; box-shadow: 0 2px 6px rgba(6,199,85,0.3); }
+.line-share:hover { background: #05b04c; }
+.btn { background: var(--primary); color: #fff; box-shadow: 0 2px 6px rgba(2,132,199,0.2); }
+.btn:hover { background: var(--primary-dark); }
+.card .line-share { margin-top: 14px; min-height: 38px; padding: 8px 14px; font-size: 13px; }
+.status { font-size: 13px; color: var(--ink-2); }
+footer { margin-top: 32px; font-size: 12px; color: var(--ink-2); text-align: center; }
+footer a { font-weight: 700; }
+.issue-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 18px; }
+.issue-nav .label { font-size: 13px; font-weight: 700; color: var(--ink-2); margin-right: 2px; }
+.issue-btn {
+  display: inline-flex; align-items: center; min-height: 36px; padding: 6px 14px; border-radius: 9999px;
+  background: var(--surface); border: 1px solid var(--line); color: var(--primary-dark); font-size: 13.5px; font-weight: 700; text-decoration: none;
+}
+.issue-btn:hover { background: #f0f9ff; }
+.issue-btn[aria-current="page"] { background: #0f172a; border-color: #0f172a; color: #fff; }
+.issue-btn.more { color: var(--ink-2); }
+@media (max-width: 640px) {
+  .actions a, .actions button { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<main class="container">
+
+  <header class="top">
+    <span class="header-tag">群馬県ドローン普及協会 ｜ 会員向け週報</span>
+    <h1>ドローン週報 | 2026年11月22日号</h1>
+    <p>対象期間 11/15（日）〜11/21（土） ／ 法令・群馬・DJI・業界の19件</p>
+  </header>
+
+  <nav class="issue-nav" id="issue-nav" aria-label="号の切り替え"><span class="label">号を切り替え</span></nav>
+
+  <section class="summary-banner" aria-labelledby="sum-h">
+    <div class="summary-head"><h2 id="sum-h">今週の注目</h2><span class="summary-hint">タップで各ニュースへ</span></div>
+    <ol class="summary-list">
+      <li><a href="#n01"><span class="num">1</span><span><span class="pill law">法令</span><b>航空法施行規則の改正案、意見募集が始まる（12/15締切）</b></span></a></li>
+      <li><a href="#nG1"><span class="num">2</span><span><span class="pill gunma">群馬</span><b>前橋のクマは見つからず、22日朝から捜索を再開</b></span></a></li>
+      <li><a href="#n05"><span class="num">3</span><span><span class="pill dji">DJI</span><b>楽天ブラックフライデーは11/25まで。DJI公式は11/27から</b></span></a></li>
+      <li><a href="#n04"><span class="num">4</span><span><span class="pill dji">DJI</span><b>中国の値上げ、対象製品と上げ幅が判明。日本は据え置き</b></span></a></li>
+      <li><a href="#n11"><span class="num">5</span><span><span class="pill biz">業界</span><b>常設ドローンポートの遠隔巡回でヒグマを発見</b></span></a></li>
+      <li><a href="#n09"><span class="num">6</span><span><span class="pill biz">業界</span><b>マゼックスが10Lの小型農業ドローン「飛助J10」</b></span></a></li>
+    </ol>
+  </section>
+
+  <p class="lead">前号（11/21号）と対象期間がほぼ重なるため、前号に載せた話題は、新しい動きがあったものだけを載せています。</p>
+
+  <div class="filters" role="group" aria-label="カテゴリで絞り込み">
+    <button type="button" data-filter="all" aria-pressed="true">すべて</button>
+    <button type="button" data-filter="law" aria-pressed="false">法令</button>
+    <button type="button" data-filter="gunma" aria-pressed="false">群馬</button>
+    <button type="button" data-filter="dji" aria-pressed="false">DJI</button>
+    <button type="button" data-filter="biz" aria-pressed="false">業界</button>
+  </div>
+
+  <div class="list" id="list">
+
+    <article class="card" id="n01" data-main="law" data-cats="law">
+      <div class="meta"><span class="no">01</span><span class="pill law">法令</span><span>11/16 公示</span></div>
+      <h3>航空法施行規則の改正案、意見募集が始まる。未登録の娯楽用ラジコン機も許可申請が可能に</h3>
+      <ul class="pts">
+        <li>国交省が11/16、e-Govでパブリック・コメント（意見募集）を始めました。締切は12/15（火）必着です。</li>
+        <li>一定の要件を満たして届け出た娯楽用の模型航空機（ラジコン機）は、登録なしで飛ばせます。ただし、高さ150m以上の空域などで飛ばす「特定飛行」の許可・承認申請には、これまで登録記号が必要でした。</li>
+        <li>改正案では、登録記号の代わりに「飛行させる者を特定する番号」で申請できるようにします。飛行計画の通報、飛行日誌、事故などの報告も同じ扱いになります。</li>
+        <li>公布は2027年1月、施行は2027年3月31日の予定です。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 業務でドローンを飛ばす会員への影響は小さいとみられます。ラジコン機の愛好家や、模型の団体と関わりがある会員は、締切までに内容を確認してください。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://public-comment.e-gov.go.jp/pcm/download?seqNo=0000324190" target="_blank" rel="noopener">e-Gov 意見募集要項</a>
+        <a href="https://public-comment.e-gov.go.jp/pcm/download?seqNo=0000324192" target="_blank" rel="noopener">改正案の概要（PDF）</a>
+      </p>
+    </article>
+
+    <article class="card" id="n02" data-main="law" data-cats="law">
+      <div class="meta"><span class="no">02</span><span class="pill law">法令</span><span>11/18 公示</span></div>
+      <h3>空飛ぶクルマの離着陸場「バーティポート整備指針」の改正案、意見募集</h3>
+      <ul class="pts">
+        <li>国交省が11/18に意見募集を始めました。締切は12/18（金）17時必着です。</li>
+        <li>バーティポートとは、空飛ぶクルマが離着陸する場所のことです。国内の基準ができるまでの暫定的な指針を一部改正します。</li>
+        <li>あわせて、航空法第79条ただし書の「場外離着陸」の許可の事務処理基準なども改正します。</li>
+      </ul>
+      <p class="src"><span>出典</span>
+        <a href="https://public-comment.e-gov.go.jp/pcm/download?seqNo=0000324241" target="_blank" rel="noopener">e-Gov 意見募集資料</a>
+      </p>
+    </article>
+
+    <article class="card" id="n03" data-main="law" data-cats="law">
+      <div class="meta"><span class="no">03</span><span class="pill law">法令</span><span class="pill flag">11/22時点の確認結果</span></div>
+      <h3>国交省の無人航空機の告知と、飛行禁止法の対象施設の指定は、今週の新規掲載なし</h3>
+      <ul class="pts">
+        <li>国交省「無人航空機の飛行ルール」のお知らせ欄の最新は、10/21付（熊本地震を受けた技能証明などの有効期間の弾力的運用）のままです。「よくあるご質問及び資料」も新しい掲載はありません。</li>
+        <li>警察庁が小型無人機等飛行禁止法で指定する「対象特別要人所在施設」は、最新が11/2発表の告示です。全国豊かな海づくり大会に伴い、大阪府のリーガロイヤルホテル（11/14〜15）とりんくう公園（11/15）が指定されました。今週発表の新しい指定はありません。</li>
+        <li>前号で取り上げた神奈川県の園芸博会場の飛行禁止条例案は、議会への提出日などの続報を確認できませんでした。県のページでは公布を「12月頃」としていて、報道（来年2月）と食い違っています。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 今週すぐ対応が必要な規制の変更は、確認できた範囲ではありません。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://www.mlit.go.jp/koku/koku_tk10_000003.html" target="_blank" rel="noopener">国土交通省 無人航空機の飛行ルール</a>
+        <a href="https://www.npa.go.jp/bureau/security/kogatamujinki/youjin.html" target="_blank" rel="noopener">警察庁 対象特別要人所在施設</a>
+        <a href="https://www.npa.go.jp/news/release/2026/1102kouhousiryou.pdf" target="_blank" rel="noopener">警察庁 11/2発表</a>
+        <a href="https://www.pref.kanagawa.jp/docs/rn7/pub/c5844791.html" target="_blank" rel="noopener">神奈川県</a>
+      </p>
+    </article>
+
+    <article class="card" id="n04" data-main="dji" data-cats="dji">
+      <div class="meta"><span class="no">04</span><span class="pill dji">DJI</span><span>11/19 報道</span></div>
+      <h3>DJIの中国での値上げ、対象製品と上げ幅が判明。日本の価格は据え置き</h3>
+      <ul class="pts">
+        <li>前号で伝えた11/18の値上げについて、対象製品が報じられました。</li>
+        <li>Osmo Pocket 4Pは3,799元から4,099元へ。Vlogキットは4,299元から4,859元へ上がり、上げ幅は560元（約1.3万円）です。Osmo Nano（128GB）は2,298元から2,498元へ。Osmo Pocket 4も対象です。</li>
+        <li>理由は、半導体やストレージ部品のコスト上昇とされています。日本の価格は11/19時点で変わっていません。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 今回の対象はカメラ製品で、ドローン本体は記事に出ていません。日本で改定されるかは未発表です。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://taisy0.com/2026/11/19/230660.html" target="_blank" rel="noopener">taisy0 11/19</a>
+      </p>
+    </article>
+
+    <article class="card" id="n05" data-main="dji" data-cats="dji">
+      <div class="meta"><span class="no">05</span><span class="pill dji">DJI</span><span class="pill flag">お得情報</span><span>11/21時点</span></div>
+      <h3>楽天ブラックフライデーは11/25まで。DJI公式の対象製品はまだ未発表</h3>
+      <div class="bf">
+        <div><span class="k">楽天市場</span><span class="v">11/19(水) 20:00 〜 11/25(火) 1:59。ポイント最大47.5倍</span></div>
+        <div><span class="k">DJI公式（日本）</span><span class="v">11/27 〜 12/7。対象製品と価格は11/21時点で未発表</span></div>
+        <div><span class="k">Amazon先行</span><span class="v">11/27(金) 〜 11/29(日)。本セールは11/30〜12/7</span></div>
+      </div>
+      <ul class="pts">
+        <li>楽天のセール紹介記事では、DJIを「最大65%オフ」のストアとして載せています。どの製品がいくらになるかは書かれていません。</li>
+        <li>ブログの情報では、DJI公式ストアでOsmo Pocket 4のDJIクレジット5%還元などの特典が出ています。公式ページでは確認できていません。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 楽天で買う場合は、買い回りでポイントが増えます。ただ、DJI公式とAmazonの値下げは11/27からなので、急ぎでなければ価格を見比べてから決めると安心です。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://www.phileweb.com/sp/news/hobby/202611/16/8713.html" target="_blank" rel="noopener">PHILE WEB 11/16</a>
+        <a href="https://asobinet.com/rakuten-ichiba-black-friday-sale-camera-related-deals-roundup-2026/" target="_blank" rel="noopener">とるなら 11/19</a>
+        <a href="https://yamazuki.net/dji-sale/" target="_blank" rel="noopener">yamazuki.net 11/21</a>
+      </p>
+    </article>
+
+    <article class="card" id="n06" data-main="dji" data-cats="dji">
+      <div class="meta"><span class="no">06</span><span class="pill dji">DJI</span><span>11/16（米国時間）報道</span></div>
+      <h3>Matrice 4シリーズに新しいファームウェア。内容は規制関連の変更とバグ修正</h3>
+      <ul class="pts">
+        <li>バージョンは v19.01.00.07 です。対象は Matrice 4 本体、送信機 RC Plus 2 Enterprise、AS1、AL1、D-RTK 3、DJI Pilot 2 などと報じられています。</li>
+        <li>更新内容は「規制関連の変更と一般的なバグ修正」だけで、どの国の規制かは示されていません。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 業務で Matrice 4 を使う会員は、現場の前日までに更新し、動作を確かめておくと安心です。DJI公式のリリースノートは、今回は確認できていません。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://dronedj.com/2026/11/16/new-firmware-dji-matrice-4/" target="_blank" rel="noopener">DroneDJ 11/16</a>
+      </p>
+    </article>
+
+    <article class="card" id="n07" data-main="dji" data-cats="dji biz">
+      <div class="meta"><span class="no">07</span><span class="pill dji">DJI</span><span class="pill biz">海外</span><span>11/16〜21（米国時間）</span></div>
+      <h3>米国：DJIとFCCの裁判。FCCはあらためて訴えの却下を求める</h3>
+      <ul class="pts">
+        <li>FCC（米連邦通信委員会）は2025年12月、DJIを通信機器の「対象リスト（Covered List）」に加え、新しい機種の認証を止めています。</li>
+        <li>DJIは11月初め、FCCに早く判断を出させるよう控訴裁判所に申し立てました。FCCと司法省は反論し、本体の訴えも却下するよう求めています。</li>
+        <li>裁判所の判断はまだです。米国では、すでに認証を受けた機種の販売と、手持ちの機体の飛行は続けられます。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 日本での販売や使用に直接の影響はありません。部品の供給や新製品の投入時期に影響するかは分かっていません。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://dronexl.co/2026/11/16/dji-mandamus-petition-fcc-ninth-circuit-reply-dismiss/" target="_blank" rel="noopener">DroneXL 11/16</a>
+        <a href="https://dronexl.co/2026/11/21/dji-fcc-mandamus-petition-explained-51-drones/" target="_blank" rel="noopener">DroneXL 11/21</a>
+        <a href="https://dronedj.com/2026/11/16/lawsuit-fcc-dji-drone-ban/" target="_blank" rel="noopener">DroneDJ 11/16</a>
+      </p>
+    </article>
+
+    <article class="card" id="n08" data-main="biz" data-cats="biz">
+      <div class="meta"><span class="no">08</span><span class="pill biz">業界</span><span>11/17 決議</span></div>
+      <h3>リベラウェア、国産ドローン向けのバッテリー事業に参入。カナダ企業と合弁</h3>
+      <ul class="pts">
+        <li>狭い場所の点検用ドローンを作るリベラウェアが、次世代リチウムイオン電池の技術を持つカナダのNEO Battery Materialsと合弁会社をつくります。</li>
+        <li>国産ドローン向けの高性能バッテリーを開発・供給し、将来は国内でのセル（電池の中身）の生産も検討します。社名と設立日は未定です。</li>
+      </ul>
+      <p class="src"><span>出典</span>
+        <a href="https://drone-journal.impress.co.jp/docs/news/1189081.html" target="_blank" rel="noopener">ドローンジャーナル 11/19</a>
+      </p>
+    </article>
+
+    <article class="card" id="n09" data-main="biz" data-cats="biz">
+      <div class="meta"><span class="no">09</span><span class="pill biz">業界</span><span>11/18 報道</span></div>
+      <h3>マゼックス、日本の田畑に合わせた小型農業ドローン「飛助J10」を11月発売</h3>
+      <ul class="pts">
+        <li>タンクは液剤10L、粒剤10kgです。アームは約0.5秒で開閉できます。</li>
+        <li>日本の衛星「みちびき」を含む5つの衛星測位に対応します。200V電源なら約12分で急速充電できます。</li>
+        <li>販売終了後も5年間の保守があります。価格は記事に出ていません。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 区画が小さい中山間地の田畑で使いやすい大きさです。散布事業をしている会員は、来年の防除シーズンに向けた比較の候補になります。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://drone-journal.impress.co.jp/docs/news/1189056.html" target="_blank" rel="noopener">ドローンジャーナル 11/18</a>
+        <a href="https://mazex.jp/product/tobisuke_j10/" target="_blank" rel="noopener">マゼックス 製品ページ</a>
+      </p>
+    </article>
+
+    <article class="card" id="n10" data-main="biz" data-cats="biz">
+      <div class="meta"><span class="no">10</span><span class="pill biz">業界</span><span>11/19 報道（11/6 発表）</span></div>
+      <h3>オプティムのドローン農薬散布、2026年度は約4.5万haで前年度の1.4倍</h3>
+      <ul class="pts">
+        <li>26都道府県、134市町村で実施。利用は136団体、農家は約2万人です。</li>
+        <li>対象は水稲、麦、大豆。約300の操縦チームが、約16.7万の圃場（田畑）を担当する見込みです。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 農薬散布は、受託の需要が伸び続けている分野です。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://drone-journal.impress.co.jp/docs/news/1189085.html" target="_blank" rel="noopener">ドローンジャーナル 11/19</a>
+      </p>
+    </article>
+
+    <article class="card" id="n11" data-main="biz" data-cats="biz gunma">
+      <div class="meta"><span class="no">11</span><span class="pill biz">業界</span><span class="pill gunma">クマ対策</span><span>11/17〜20 報道</span></div>
+      <h3>常設のドローンポートから遠隔巡回し、ヒグマを発見。北海道南富良野町</h3>
+      <ul class="pts">
+        <li>KDDIスマートドローンが、総務省の事業として実施。11/4の定期巡回で、赤外線（サーマル）カメラが藪に潜む個体を見つけ、通常のカメラでヒグマと確認しました。</li>
+        <li>秋田県藤里町では、エアロネクストなど4社が、ドローンを使ったクマ対策の実証を10/29に行ったと報じられています。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 前橋市のように市街地へクマが出る例が増えるなか、赤外線カメラでの捜索は、自治体から相談が来やすい使い方です。飛ばす際は、航空法の特例の対象になるかを事前に確認してください。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://drone.jp/news/20261120114221130473.html" target="_blank" rel="noopener">DRONE.jp 11/20</a>
+        <a href="https://drone-journal.impress.co.jp/docs/news/1189055.html" target="_blank" rel="noopener">ドローンジャーナル 11/17（秋田）</a>
+      </p>
+    </article>
+
+    <article class="card" id="n12" data-main="biz" data-cats="biz">
+      <div class="meta"><span class="no">12</span><span class="pill biz">業界</span><span>11/20 報道（10/14〜15 飛行）</span></div>
+      <h3>VTOL機で三宅島〜御蔵島を往復約40km。都の防災訓練で物資を輸送</h3>
+      <ul class="pts">
+        <li>エアロセンスのVTOL機（垂直に離着陸し、飛行機のように飛ぶ機体）「AS-H1」が、風速約15m/sの中で1.2kgを運びました。片道は約15分です。</li>
+        <li>東京都の総合防災訓練の一環で、JUIDAの依頼で参加しました。御蔵島側には人を置かず、バッテリー交換もしていません。</li>
+      </ul>
+      <p class="src"><span>出典</span>
+        <a href="https://drone.jp/news/20261120094336130467.html" target="_blank" rel="noopener">DRONE.jp 11/20</a>
+      </p>
+    </article>
+
+    <article class="card" id="n13" data-main="biz" data-cats="biz dji">
+      <div class="meta"><span class="no">13</span><span class="pill biz">業界</span><span class="pill dji">DJI機</span><span>11/20 報道</span></div>
+      <h3>運送会社が自社の社員でドローン輸送へ。DJI FlyCart 30で約12kgを運ぶ</h3>
+      <ul class="pts">
+        <li>三重県の多貴商運が、10/27の事前実証で、本社から鈴鹿物流センターまでの約3.8kmを、ウインチで約12kgの荷物を吊って運びました。</li>
+        <li>2027年3月中旬に、自社の社員が操縦する輸送実証を行う計画です。</li>
+      </ul>
+      <p class="point"><b>ここがポイント</b> 外部に任せず、運送会社が自分で運航する例です。物流向けの操縦者の育成や、運航の受託を考える会員の参考になります。</p>
+      <p class="src"><span>出典</span>
+        <a href="https://drone-journal.impress.co.jp/docs/news/1189090.html" target="_blank" rel="noopener">ドローンジャーナル 11/20</a>
+      </p>
+    </article>
+
+    <article class="card" id="n14" data-main="biz" data-cats="biz">
+      <div class="meta"><span class="no">14</span><span class="pill biz">業界</span><span>11/20 報道</span></div>
+      <h3>ドローンショーの大型化が続く。佐賀バルーンフェスタで4,050機</h3>
+      <ul class="pts">
+        <li>11/3の佐賀インターナショナルバルーンフェスタで、4,050機のショーがありました。記事は「日本最大規模」としています。</li>
+        <li>11/21には和歌山城で1,000機のショーが報じられています。</li>
+      </ul>
+      <p class="src"><span>出典</span>
+        <a href="https://drone-journal.impress.co.jp/docs/news/1189088.html" target="_blank" rel="noopener">ドローンジャーナル（佐賀）</a>
+        <a href="https://drone-journal.impress.co.jp/docs/news/1189093.html" target="_blank" rel="noopener">ドローンジャーナル（和歌山）</a>
+      </p>
+    </article>
+
+  </div>
+
+  <section class="block" aria-labelledby="local-h">
+    <h2 id="local-h">群馬ローカル深掘り</h2>
+    <p class="lead">今週は、県内でドローンが主役のニュースを新しく見つけられませんでした。前橋のクマ対応の続報を中心に、今週の出来事と最近の背景に分けて並べています。</p>
+    <div class="list" id="list-local">
+
+      <article class="card" id="nG1" data-main="gunma" data-cats="gunma">
+        <div class="meta"><span class="no">G1</span><span class="pill gunma">群馬</span><span class="pill flag">今週・続報</span><span>11/21夜〜22朝</span></div>
+        <h3>前橋市街地のクマは見つからず。水路に赤外線カメラを置き、22日朝から捜索を再開</h3>
+        <ul class="pts">
+          <li>21日は、天台橋付近の暗渠（地下の水路）を捜索し、花火での追い出しもしましたが、クマは見つかりませんでした。</li>
+          <li>市は「夜間の捜索は危険」として中止し、道路の封鎖は18時45分ごろに解除しました。</li>
+          <li>クマが逃げ込んだとみられる水路には、赤外線カメラを設置。22日朝から捜索を再開すると報じられています。</li>
+        </ul>
+        <p class="point"><b>ここがポイント</b> 21〜22日の捜索でドローンを使ったかどうかは、確認した報道や市のページには書かれていません。22日の捜索の結果は、この号の作成時点では未確認です。</p>
+        <p class="src"><span>出典</span>
+          <a href="https://news.web.nhk/newsweb/na/nd-20261122de79801" target="_blank" rel="noopener">NHK 11/22</a>
+          <a href="https://www.city.maebashi.gunma.jp/soshiki/noseibu/nosei/oshirase/4548.html" target="_blank" rel="noopener">前橋市（11/21更新）</a>
+          <a href="https://takasaki.keizai.biz/headline/5358" target="_blank" rel="noopener">高崎前橋経済新聞 11/21</a>
+        </p>
+      </article>
+
+      <article class="card" id="nG2" data-main="gunma" data-cats="gunma">
+        <div class="meta"><span class="no">G2</span><span class="pill gunma">群馬</span><span class="pill flag">今週</span><span>11/18</span></div>
+        <h3>山本知事「検証し、対策を考えたい」。川がクマの通り道になる点を課題に</h3>
+        <ul class="pts">
+          <li>18日の定例会見で、前橋市街地のクマ出没を「大変重く受け止めている」と述べました。</li>
+          <li>クマの通り道とみられる河川の対策が課題だとしています。市は市斎場に箱わなを置き、パトロールを強めました。</li>
+        </ul>
+        <p class="point"><b>ここがポイント</b> 会見の記事にドローンは出てきません。河川沿いの監視は、ドローンが役立つ場面です。県や市の対策の中身が決まる前に、協会として何ができるかを整理しておくと提案しやすくなります。</p>
+        <p class="src"><span>出典</span>
+          <a href="https://www.fmgunma.com/fmgnews/?p=12622" target="_blank" rel="noopener">FM GUNMA 11/18</a>
+          <a href="https://www.jomo-news.co.jp/articles/-/1068327" target="_blank" rel="noopener">上毛新聞</a>
+        </p>
+      </article>
+
+      <article class="card" id="nG3" data-main="gunma" data-cats="gunma">
+        <div class="meta"><span class="no">G3</span><span class="pill gunma">群馬</span><span class="pill flag">今週</span><span>11/20</span></div>
+        <h3>県議会の後期定例会が開会。一般質問は11/26から</h3>
+        <ul class="pts">
+          <li>24議案を提出。補正予算は約103億円で、主な中身は職員の給与改定、物価高対策、クビアカツヤカミキリ対策です。</li>
+          <li>記事には、クマ対策やドローンの予算は出てきません。会期は12/11まで、一般質問は11/26、27、12/1です。</li>
+        </ul>
+        <p class="point"><b>ここがポイント</b> 一般質問でクマ対策が取り上げられるかに注目です。ドローンに触れるかどうかは、現時点では分かりません。</p>
+        <p class="src"><span>出典</span>
+          <a href="https://www.fmgunma.com/fmgnews/?p=12656" target="_blank" rel="noopener">FM GUNMA 11/20</a>
+        </p>
+      </article>
+
+      <article class="card" id="nG4" data-main="gunma" data-cats="gunma">
+        <div class="meta"><span class="no">G4</span><span class="pill gunma">群馬</span><span class="pill flag">背景</span><span>10/15・11/5</span></div>
+        <h3>県はクマを追い払うAIロボットを開発中。高崎では緊急銃猟の訓練も</h3>
+        <ul class="pts">
+          <li>群馬県は県内企業と、クマを追い払うAI搭載のロボットを開発していて、来年にも実証する予定です（NHK 10/15）。</li>
+          <li>高崎市では11/5、住民の避難から発砲までの手順を確かめる「緊急銃猟」の訓練がありました。</li>
+        </ul>
+        <p class="point"><b>ここがポイント</b> どちらもドローンではありませんが、県内のクマ対策が広がっています。高崎市は、赤外線カメラ付きドローンでの生息調査の方針を昨年発表しています（前号03を参照）。</p>
+        <p class="src"><span>出典</span>
+          <a href="https://news.web.nhk/newsweb/na/nd-20261015de59917" target="_blank" rel="noopener">NHK 10/15</a>
+          <a href="https://news.web.nhk/newsweb/na/nd-20261105de71022" target="_blank" rel="noopener">NHK 11/5</a>
+        </p>
+      </article>
+
+      <article class="card" id="nG5" data-main="gunma" data-cats="gunma dji">
+        <div class="meta"><span class="no">G5</span><span class="pill gunma">近隣</span><span class="pill dji">DJI</span><span class="pill flag">予定・受付終了</span><span>11/22</span></div>
+        <h3>埼玉県羽生市で「大人のためのドローン体験会」。DJI Mini 5 Proを使用</h3>
+        <ul class="pts">
+          <li>11/22（日）、ワークヒルズ羽生で、午前と午後の2回。座学と、講師がマンツーマンで教える操縦体験があり、参加は無料です。</li>
+          <li>主催は高山無線、共催は日本ドローンアソシエイション（JDAS）。各回先着8名で、10/29時点で定員に達しています。</li>
+        </ul>
+        <p class="point"><b>ここがポイント</b> 館林、邑楽から近い会場です。同じような体験会が今後あれば、早めの申し込みが必要です。</p>
+        <p class="src"><span>出典</span>
+          <a href="https://kazo-hanyu.goguynet.jp/2026/10/27/takayamamusen-drone-taiken/" target="_blank" rel="noopener">号外NET 加須・羽生 10/27</a>
+        </p>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="sched-h">
+    <h2 id="sched-h">これからの予定</h2>
+    <div class="sched">
+      <div><span class="d">11/24(火)</span><span>DJI公式：Osmo Mobile 8、DJI Mic Miniのセール開始</span></div>
+      <div><span class="d">11/25(水)</span><span>楽天ブラックフライデー終了（1:59まで）</span></div>
+      <div><span class="d">11/26(木)</span><span>JULC群馬教習所：一等・二等の更新講習。県議会の一般質問が始まる（27日、12/1も）</span></div>
+      <div><span class="d">11/27(金)</span><span>Amazon先行セール、DJI公式ブラックフライデー開始</span></div>
+      <div><span class="d">11/27〜28</span><span>第5回ドローンサミット（郡山・ビッグパレットふくしま）</span></div>
+      <div><span class="d">12/11(金)</span><span>DJI Dock 3の無料実演セミナー（さいたま市）</span></div>
+      <div><span class="d">12/15(火)</span><span>航空法施行規則の改正案、意見募集の締切（01を参照）</span></div>
+      <div><span class="d">12/16(水)</span><span>DJI最新機の無料体験会（郡山）</span></div>
+      <div><span class="d">12/18(金)</span><span>バーティポート整備指針の改正案、意見募集の締切（02を参照）</span></div>
+      <div><span class="d">12/19(土)〜</span><span>あしかがフラワーパークで600機のドローンショー（1/3までのうち12日間）</span></div>
+    </div>
+    <p class="src"><span>出典</span>
+      <a href="https://www.mlit.go.jp/report/press/kouku10_hh_000301.html" target="_blank" rel="noopener">国交省（ドローンサミット）</a>
+      <a href="https://redcliff-inc.co.jp/droneshow_info/" target="_blank" rel="noopener">レッドクリフ（足利）</a>
+    </p>
+  </section>
+
+  <footer>
+    <p>作成日 2026年11月22日。出典の記載日は、各ページの公開日または更新日です。公式発表と食い違う場合は、公式発表を優先してください。</p>
+    <p><a href="./">バックナンバー一覧</a></p>
+  </footer>
+</main>
+<script src="issues.js"></script>
+<script>
+(function () {
+  var buttons = document.querySelectorAll('.filters button');
+  var cards = document.querySelectorAll('.card');
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var f = b.getAttribute('data-filter');
+      buttons.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      cards.forEach(function (c) {
+        var cats = (c.getAttribute('data-cats') || '').split(' ');
+        c.hidden = !(f === 'all' || cats.indexOf(f) !== -1);
+      });
+    });
+  });
+  var LINE = 'https://line.me/R/share?text=';
+  var PAGE = 'https://hideming.github.io/drone-news/weekly/20261122.html';
+  cards.forEach(function (c) {
+    var h = c.querySelector('h3');
+    if (!h) return;
+    var t = h.textContent.replace(/\s+/g, ' ').trim();
+    var a = document.createElement('a');
+    a.className = 'line-share';
+    a.href = LINE + encodeURIComponent('【ドローン週報】' + t + '\n' + PAGE + '#' + c.id);
+    a.target = '_blank'; a.rel = 'noopener';
+    a.textContent = 'この記事をLINEで送る';
+    a.setAttribute('aria-label', 'LINEで送る：' + t);
+    c.appendChild(a);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 /* ドローン週報の号一覧。新しい号を先頭に1行追加する。 */
 window.WEEKLY_ISSUES = [
+  { file: "20261122.html", label: "11/22号" },
   { file: "20261121.html", label: "11/21号" }
 ];
 (function () {
