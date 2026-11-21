@@ -3,196 +3,168 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ドローン週報 11月21日号</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap" rel="stylesheet">
+<title>ドローン週報 | 2026年11月21日号</title>
 <style>
-/* Layout idea: one-column weekly bulletin. Priority order is law, Gunma, DJI, industry.
-   Each card carries a left stripe in its category colour. */
 :root {
-  --bg: #F2F4F6;
-  --surface: #FFFFFF;
-  --ink: #13202B;
-  --ink-2: #4A5A68;
-  --line: #D8DFE5;
-  --accent: #0F3A5C;
-  --on-accent: #FFFFFF;
-  --law: #B4341B;   --law-bg: #FBEAE6;
-  --gunma: #2B6A3E; --gunma-bg: #E6F2EA;
-  --dji: #1D5BBF;   --dji-bg: #E6EEFA;
-  --biz: #5A4A9E;   --biz-bg: #EEEAF8;
-  --note-bg: #FFF6DD; --note-line: #E8D08A;
-  --font-display: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-  --font-body: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
-  color-scheme: light;
+  --primary: #0284c7; --primary-dark: #0369a1;
+  --bg: #f8fafc; --surface: #ffffff; --ink: #0f172a; --ink-2: #475569; --line: #e2e8f0;
+  --law: #b91c1c;   --law-bg: #fef2f2;
+  --gunma: #15803d; --gunma-bg: #f0fdf4;
+  --dji: #0369a1;   --dji-bg: #e0f2fe;
+  --biz: #6d28d9;   --biz-bg: #f5f3ff;
+  --note-bg: #fffbeb; --note-line: #fde68a;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0E161D; --surface: #16212A; --ink: #E6EDF2; --ink-2: #9DB0BF; --line: #27343F;
-    --accent: #0A2740; --on-accent: #EAF3FA;
-    --law: #F08A76;   --law-bg: #3A1E19;
-    --gunma: #7CC794; --gunma-bg: #17301F;
-    --dji: #7FB0F5;   --dji-bg: #16263F;
-    --biz: #B3A5F0;   --biz-bg: #28224A;
-    --note-bg: #2E2712; --note-line: #6B5A1F;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0E161D; --surface: #16212A; --ink: #E6EDF2; --ink-2: #9DB0BF; --line: #27343F;
-  --accent: #0A2740; --on-accent: #EAF3FA;
-  --law: #F08A76;   --law-bg: #3A1E19;
-  --gunma: #7CC794; --gunma-bg: #17301F;
-  --dji: #7FB0F5;   --dji-bg: #16263F;
-  --biz: #B3A5F0;   --biz-bg: #28224A;
-  --note-bg: #2E2712; --note-line: #6B5A1F;
-  color-scheme: dark;
-}
-
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
 body {
-  margin: 0; background: var(--bg); color: var(--ink);
-  font-family: var(--font-body); font-size: 16px; line-height: 1.75;
+  margin: 0; padding: 20px 14px 40px; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  font-size: 15.5px; line-height: 1.7;
 }
-a { color: var(--dji); text-underline-offset: 2px; }
-a:focus-visible, button:focus-visible, textarea:focus-visible { outline: 3px solid var(--dji); outline-offset: 2px; }
+a { color: var(--primary); text-underline-offset: 2px; }
+a:focus-visible, button:focus-visible, textarea:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+.container { max-width: 900px; margin: 0 auto; }
 
-.wrap { max-width: 720px; margin: 0 auto; padding: 0 16px 48px; }
-
-/* Header */
-.masthead { background: var(--accent); color: var(--on-accent); }
-.masthead .wrap { padding-top: 28px; padding-bottom: 24px; }
-.eyebrow { margin: 0; font-size: 13px; letter-spacing: .04em; opacity: .85; }
-h1 {
-  margin: 6px 0 4px; font-family: var(--font-display); font-weight: 900;
-  font-size: 34px; line-height: 1.25; text-wrap: balance;
+header.top {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff;
+  padding: 28px 24px; border-radius: 16px; margin-bottom: 18px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
-.period { margin: 0; font-size: 15px; font-variant-numeric: tabular-nums; opacity: .92; }
-
-/* Summary */
-.summary {
-  margin-top: -1px; background: var(--surface); border: 1px solid var(--line);
-  border-radius: 10px; padding: 16px; margin-bottom: 20px;
+.header-tag {
+  display: inline-block; background: rgba(56,189,248,0.2); color: #38bdf8;
+  padding: 4px 12px; border-radius: 9999px; font-size: 13px; font-weight: 600; margin-bottom: 12px;
 }
-.summary h2 { margin: 0 0 8px; font-family: var(--font-display); font-size: 18px; }
-.summary ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
-.summary li { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; }
+header.top h1 { margin: 0 0 8px; font-size: 22px; font-weight: 800; line-height: 1.35; }
+header.top p { margin: 0; font-size: 13.5px; color: #94a3b8; }
 
-.pill {
-  display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: 12px; font-weight: 700;
-  line-height: 1.7; white-space: nowrap;
+.summary-banner {
+  background: var(--surface); border: 1px solid var(--line); border-left: 5px solid var(--primary);
+  border-radius: 12px; padding: 20px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
+.summary-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.summary-banner h2 { margin: 0; font-size: 16px; color: var(--primary-dark); }
+.summary-hint { font-size: 12px; color: #64748b; background: #f1f5f9; padding: 3px 8px; border-radius: 6px; font-weight: 600; }
+.summary-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.summary-list a {
+  display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start;
+  padding: 8px 10px; border-radius: 8px; color: var(--ink); text-decoration: none;
+}
+.summary-list a:hover { background: #f0f9ff; color: var(--primary-dark); }
+.num {
+  display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--primary); color: #fff; font-size: 13px; font-weight: 800;
+}
+.summary-list b { font-weight: 700; }
+.summary-list .pill { margin-right: 6px; }
+
+.pill { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; line-height: 1.6; white-space: nowrap; }
 .pill.law   { color: var(--law);   background: var(--law-bg); }
 .pill.gunma { color: var(--gunma); background: var(--gunma-bg); }
 .pill.dji   { color: var(--dji);   background: var(--dji-bg); }
 .pill.biz   { color: var(--biz);   background: var(--biz-bg); }
-.pill.flag  { color: var(--ink-2); background: transparent; border: 1px solid var(--line); }
+.pill.flag  { color: var(--ink-2); background: #f1f5f9; }
 
-/* Filter */
 .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
 .filters button {
-  font: inherit; font-size: 14px; font-weight: 500; padding: 6px 14px; min-height: 40px;
-  border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer;
+  font: inherit; font-size: 14px; font-weight: 700; padding: 6px 16px; min-height: 40px;
+  border-radius: 9999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); cursor: pointer;
 }
-.filters button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.filters button[aria-pressed="true"] { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-/* Cards */
-.list { display: grid; gap: 14px; }
+.list { display: grid; gap: 16px; }
 .card {
-  background: var(--surface); border: 1px solid var(--line); border-left-width: 6px;
-  border-radius: 10px; padding: 16px;
+  background: var(--surface); border: 1px solid var(--line); border-left: 5px solid var(--primary);
+  border-radius: 14px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); scroll-margin-top: 16px;
 }
 .card[data-main="law"]   { border-left-color: var(--law); }
 .card[data-main="gunma"] { border-left-color: var(--gunma); }
 .card[data-main="dji"]   { border-left-color: var(--dji); }
 .card[data-main="biz"]   { border-left-color: var(--biz); }
 .card[hidden] { display: none; }
-
 .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 13px; color: var(--ink-2); }
-.no { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink); }
-.card h3 {
-  margin: 8px 0 8px; font-family: var(--font-display); font-weight: 900; font-size: 19px; line-height: 1.5; text-wrap: balance;
+.no {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 24px; padding: 0 6px;
+  border-radius: 6px; background: #0f172a; color: #fff; font-size: 12px; font-weight: 800;
 }
+.card h3 { margin: 10px 0 10px; font-size: 18px; font-weight: 800; line-height: 1.45; }
 .card ul.pts { margin: 0 0 10px; padding-left: 1.2em; display: grid; gap: 6px; }
 .point {
-  margin: 10px 0 0; padding: 10px 12px; border-radius: 8px; background: var(--bg); font-size: 15px;
+  margin: 12px 0 0; padding: 12px 14px; border-radius: 10px; font-size: 14.5px;
+  background: var(--gunma-bg); border: 1px solid #bbf7d0; color: #14532d;
 }
-.point b { font-weight: 700; }
-.src { margin: 10px 0 0; font-size: 13px; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 2px 12px; }
-.src span { font-weight: 500; }
+.point b { display: block; color: #166534; font-size: 13px; margin-bottom: 2px; }
+.src { margin: 12px 0 0; font-size: 13px; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.src span { font-weight: 700; }
 
 .recap { margin: 8px 0 10px; display: grid; gap: 8px; }
-.recap div { display: grid; grid-template-columns: 4.2em 1fr; gap: 8px; font-size: 15px; }
-.recap dt, .recap .d { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink-2); }
-
-.bf { margin: 8px 0 10px; display: grid; gap: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
-.bf div { display: grid; grid-template-columns: 7.2em 1fr; gap: 10px; padding: 8px 12px; font-size: 15px; border-top: 1px solid var(--line); }
+.recap div { display: grid; grid-template-columns: 4.2em 1fr; gap: 8px; font-size: 14.5px; }
+.recap .d { font-weight: 700; color: var(--ink-2); }
+.bf { margin: 8px 0 10px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.bf div { display: grid; grid-template-columns: 7.2em 1fr; gap: 10px; padding: 8px 12px; font-size: 14.5px; border-top: 1px solid var(--line); }
 .bf div:first-child { border-top: 0; }
 .bf .k { font-weight: 700; }
-.bf .v { font-variant-numeric: tabular-nums; }
 
-/* Sections below the list */
-section.block { margin-top: 28px; }
-section.block h2 { font-family: var(--font-display); font-size: 20px; margin: 0 0 10px; }
-.sched { display: grid; gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-.sched div { display: grid; grid-template-columns: 6.2em 1fr; gap: 10px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 15px; }
+section.block { margin-top: 32px; }
+section.block > h2 {
+  margin: 0 0 12px; padding-left: 10px; border-left: 4px solid var(--primary);
+  font-size: 18px; font-weight: 800; color: var(--primary-dark);
+}
+.lead { margin: 0 0 12px; font-size: 14px; color: var(--ink-2); }
+.sched { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.sched div { display: grid; grid-template-columns: 6.4em 1fr; gap: 10px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 14.5px; }
 .sched div:first-child { border-top: 0; }
-.sched .d { font-variant-numeric: tabular-nums; font-weight: 700; }
+.sched .d { font-weight: 800; color: var(--primary-dark); }
 
-.note { background: var(--note-bg); border: 1px solid var(--note-line); border-radius: 10px; padding: 14px 16px; }
-.note h2 { margin-bottom: 6px; }
-.note ul { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; font-size: 15px; }
+.note { background: var(--note-bg); border: 1px solid var(--note-line); border-radius: 12px; padding: 16px 18px; }
+.note ul { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; font-size: 14.5px; }
 
-.line-box { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
-.line-box p { margin: 0 0 10px; font-size: 14px; color: var(--ink-2); }
+.control-panel {
+  background: #ffffff; border: 2px solid var(--primary); border-radius: 14px; padding: 20px;
+  margin-bottom: 24px; box-shadow: 0 4px 14px rgba(2,132,199,0.1);
+}
+.control-title { margin: 0 0 6px; font-size: 16px; font-weight: 800; color: var(--primary-dark); }
+.control-desc { margin: 0 0 14px; font-size: 13px; color: var(--ink-2); }
 textarea {
-  width: 100%; min-height: 300px; font: inherit; font-size: 14px; line-height: 1.7; padding: 10px 12px;
-  border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); resize: vertical;
+  width: 100%; min-height: 190px; font: inherit; font-size: 14px; line-height: 1.6; padding: 12px 14px;
+  border: 1px solid var(--line); border-radius: 8px; background: #f8fafc; color: #334155; resize: vertical;
 }
-.copy {
-  margin-top: 10px; font: inherit; font-weight: 700; font-size: 15px; padding: 10px 18px; min-height: 44px;
-  border: 0; border-radius: 8px; background: var(--accent); color: var(--on-accent); cursor: pointer;
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 12px; }
+.line-share, .btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 12px 20px;
+  border: 0; border-radius: 8px; font: inherit; font-size: 14px; font-weight: 800; text-decoration: none; cursor: pointer;
 }
-.line-share {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 10px 18px;
-  border-radius: 8px; background: #06C755; color: #FFFFFF; font-weight: 700; font-size: 15px; text-decoration: none;
+.line-share { background: #06c755; color: #ffffff !important; box-shadow: 0 2px 6px rgba(6,199,85,0.3); }
+.line-share:hover { background: #05b04c; }
+.btn { background: var(--primary); color: #fff; box-shadow: 0 2px 6px rgba(2,132,199,0.2); }
+.btn:hover { background: var(--primary-dark); }
+.card .line-share { margin-top: 14px; min-height: 38px; padding: 8px 14px; font-size: 13px; }
+.status { font-size: 13px; color: var(--ink-2); }
+footer { margin-top: 32px; font-size: 12px; color: var(--ink-2); text-align: center; }
+footer a { font-weight: 700; }
+@media (max-width: 640px) {
+  .actions a, .actions button { width: 100%; }
 }
-.line-share:hover { background: #05A847; }
-.card .line-share { margin-top: 12px; min-height: 40px; padding: 8px 14px; font-size: 14px; }
-.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 10px; }
-.actions .copy { margin-top: 0; }
-.status { margin-left: 10px; font-size: 14px; color: var(--ink-2); }
-.lead { margin: 0 0 12px; font-size: 15px; color: var(--ink-2); }
-footer { margin-top: 28px; font-size: 12px; color: var(--ink-2); }
-
-@media (min-width: 560px) {
-  h1 { font-size: 42px; }
-  .wrap { padding-left: 24px; padding-right: 24px; }
-}
-@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
+<main class="container">
 
-<header class="masthead">
-  <div class="wrap">
-    <p class="eyebrow">群馬県ドローン普及協会 会員のみなさまへ</p>
-    <h1>ドローン週報</h1>
-    <p class="period">2026年11月21日号 ／ 対象 11/14（土）〜11/21（土）</p>
-  </div>
-</header>
+  <header class="top">
+    <span class="header-tag">群馬県ドローン普及協会 ｜ 会員向け週報</span>
+    <h1>ドローン週報 | 2026年11月21日号</h1>
+    <p>対象期間 11/14（土）〜11/21（土） ／ 法令・群馬・DJI・業界の21件</p>
+  </header>
 
-<main class="wrap">
-
-  <section class="summary" aria-labelledby="sum-h" style="margin-top:20px">
-    <h2 id="sum-h">今週のポイント</h2>
-    <ul>
-      <li><span class="pill law">法令</span><span>神奈川県が園芸博（GREEN×EXPO 2027）会場のドローン飛行禁止条例案を発表。国交省の無人航空機の告知欄に、今週の新規掲載は確認できませんでした。</span></li>
-      <li><span class="pill gunma">群馬</span><span>前橋市街地でクマ出没が続き、県警は17日にドローンも使って捜索、21日は緊急銃猟を試みました。県内の飛行禁止対象施設は3か所で、周辺での飛行は48時間前までの通報が必要です。</span></li>
-      <li><span class="pill dji">DJI</span><span>ブラックフライデーは11/27開始（Amazon先行・DJI公式）。Neo 3の発売間近とのリークが出ています。中国では11/18に一部値上げ。</span></li>
-    </ul>
+  <section class="summary-banner" aria-labelledby="sum-h">
+    <div class="summary-head"><h2 id="sum-h">今週の注目</h2><span class="summary-hint">タップで各ニュースへ</span></div>
+    <ol class="summary-list">
+      <li><a href="#n01"><span class="num">1</span><span><span class="pill law">法令</span><b>神奈川県、園芸博会場のドローン飛行禁止条例案を発表</b></span></a></li>
+      <li><a href="#nG1"><span class="num">2</span><span><span class="pill gunma">群馬</span><b>前橋市街地のクマ出没、県警がドローンも使って捜索</b></span></a></li>
+      <li><a href="#n04"><span class="num">3</span><span><span class="pill gunma">群馬</span><b>県内の飛行禁止対象施設は3か所、周辺は48時間前までに通報</b></span></a></li>
+      <li><a href="#n07"><span class="num">4</span><span><span class="pill dji">DJI</span><b>ブラックフライデーは11/27開始、日程まとめ</b></span></a></li>
+      <li><a href="#n12"><span class="num">5</span><span><span class="pill dji">DJI</span><b>DJI Dock 3の無料実演、12/11さいたま市</b></span></a></li>
+      <li><a href="#n10"><span class="num">6</span><span><span class="pill biz">業界</span><b>ドローンサミット（郡山）11/27〜28</b></span></a></li>
+    </ol>
   </section>
 
   <div class="filters" role="group" aria-label="カテゴリで絞り込み">
@@ -559,56 +531,11 @@ footer { margin-top: 28px; font-size: 12px; color: var(--ink-2); }
     </p>
   </section>
 
-  <section class="block note" aria-labelledby="chk-h">
-    <h2 id="chk-h">配信前に確認したい点</h2>
-    <ul>
-      <li>群馬の項目は、上毛新聞の見出しと冒頭、県・市の発表、各社のリリースで確認しました。NHKや読売など、ほかの地元メディアは未確認です。前橋のクマ対応は、21日夕方までの情報です。</li>
-      <li>e-Govのパブリック・コメントと警察庁の発表は、直接確認できていません。</li>
-      <li>DJIの新製品に関する情報は、公式発表ではなくリークです。</li>
-      <li>国交省ページの内容は、2026年11月21日に取得したものです。</li>
-    </ul>
-  </section>
-
-  <section class="block" aria-labelledby="line-h">
-    <h2 id="line-h">LINE投稿用テキスト</h2>
-    <div class="line-box">
-      <p>LINEには見出しだけが届き、リンクを開くとこのページで詳細を読めます。「LINEで送る」を押すと、送り先のトークを選べます（スマホのLINEアプリ）。各記事の下のボタンは、その記事の見出しとリンクだけを送ります。</p>
-      <textarea id="line-text" aria-label="LINE投稿用テキスト">【ドローン週報 11/21号】
-
-■法令
-・神奈川県、園芸博会場のドローン飛行禁止条例案を発表
-・国交省の告知、今週の新規掲載なし
-
-■群馬
-・前橋市街地のクマ捜索に県警がドローン
-・県内の飛行禁止対象施設は3か所、周辺は48時間前までに通報
-・JULC群馬教習所で更新講習（11/26）
-・ほか県内の最近の動き6件
-
-■DJI
-・Neo 3は発売間近か（非公式情報）
-・ブラックフライデーは11/27開始
-・中国で一部値上げ、日本は未発表
-・DJI Dock 3の無料実演、12/11さいたま市
-・DJI産業機の月額導入、ドロサツ!!が受付再開
-
-■業界
-・BEPラインがロボット大賞で優秀賞
-・ドローンサミット（郡山）11/27〜28
-・うめきたの森でドローンショー
-・NTTイードローン、二等保有者向けの一等講習
-
-詳細はこちら
-https://hideming.github.io/drone-news/weekly/20261121.html</textarea>
-      <div class="actions"><a class="line-share" id="line-all" href="https://line.me/R/share" target="_blank" rel="noopener">LINEで送る</a><button type="button" class="copy" id="copy-btn">テキストをコピー</button><span class="status" id="copy-status" role="status" aria-live="polite"></span></div>
-    </div>
-  </section>
-
   <footer>
     <p>作成日 2026年11月21日。出典の記載日は、各ページの公開日または更新日です。公式発表と食い違う場合は、公式発表を優先してください。</p>
+    <p><a href="./">バックナンバー一覧</a></p>
   </footer>
 </main>
-
 <script>
 (function () {
   var buttons = document.querySelectorAll('.filters button');
@@ -623,42 +550,19 @@ https://hideming.github.io/drone-news/weekly/20261121.html</textarea>
       });
     });
   });
-
   var LINE = 'https://line.me/R/share?text=';
   var PAGE = 'https://hideming.github.io/drone-news/weekly/20261121.html';
-  function clip(t, n) { t = t.replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; }
-
   cards.forEach(function (c) {
     var h = c.querySelector('h3');
     if (!h) return;
-    var lines = ['【ドローン週報 11/21号】', clip(h.textContent, 60), '詳細 ' + PAGE + '#' + c.id];
+    var t = h.textContent.replace(/\s+/g, ' ').trim();
     var a = document.createElement('a');
     a.className = 'line-share';
-    a.href = LINE + encodeURIComponent(lines.join('\n'));
+    a.href = LINE + encodeURIComponent('【ドローン週報】' + t + '\n' + PAGE + '#' + c.id);
     a.target = '_blank'; a.rel = 'noopener';
     a.textContent = 'この記事をLINEで送る';
-    a.setAttribute('aria-label', 'LINEで送る：' + h.textContent);
+    a.setAttribute('aria-label', 'LINEで送る：' + t);
     c.appendChild(a);
-  });
-
-  var all = document.getElementById('line-all');
-  var taAll = document.getElementById('line-text');
-  function setAll() { all.href = LINE + encodeURIComponent(taAll.value); }
-  setAll();
-  taAll.addEventListener('input', setAll);
-
-  var btn = document.getElementById('copy-btn');
-  var ta = document.getElementById('line-text');
-  var st = document.getElementById('copy-status');
-  btn.addEventListener('click', function () {
-    ta.focus(); ta.select();
-    var done = function () { st.textContent = 'コピーしました'; };
-    var fail = function () { st.textContent = 'コピーできませんでした。テキストを長押しして選び、コピーしてください'; };
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(ta.value).then(done, fail);
-      } else { fail(); }
-    } catch (e) { fail(); }
   });
 })();
 </script>
